@@ -1,6 +1,6 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
-* Студент: [Юлия Максимова](https://up.htmlacademy.ru/javascript/9/user/367171).
+* Студент: [Андрей].
 * Наставник: `Неизвестно`.
 
 ---
