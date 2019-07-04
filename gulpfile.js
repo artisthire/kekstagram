@@ -18,6 +18,8 @@ var patch = {
     root: 'source/',
     html: 'source/*.html',
     css: 'source/css/*.css',
+    fonts: 'source/fonts/*',
+    favicon: 'source/favicon.ico',
     img: 'source/img/*',
     photos: 'source/photos/*',
     js: 'source/js/*.js'
@@ -26,6 +28,7 @@ var patch = {
     root: 'build/',
     html: 'build/',
     css: 'build/css/',
+    fonts: 'build/fonts/',
     img: 'build/img/',
     js: 'build/js/'
   }
@@ -48,6 +51,18 @@ gulp.task('css:copy', function () {
     .pipe(changed(patch.dest.css))
     .pipe(gulp.dest(patch.dest.css))
     .pipe(browserSync.stream());
+});
+
+gulp.task('fonts:copy', function () {
+  console.log('---------- Копирование FONTS');
+  return gulp.src(patch.src.fonts)
+    .pipe(gulp.dest(patch.dest.fonts));
+});
+
+gulp.task('favicon:copy', function () {
+  console.log('---------- Копирование FONTS');
+  return gulp.src(patch.src.favicon)
+    .pipe(gulp.dest(patch.dest.root));
 });
 
 gulp.task('img:copy', function () {
@@ -96,7 +111,7 @@ gulp.task('serve', function () {
 
 gulp.task('build',
     gulp.series('clean', 'html:copy',
-        gulp.parallel('css:copy', 'img:copy', 'js'))
+        gulp.parallel('css:copy', 'fonts:copy', 'favicon:copy', 'img:copy', 'js'))
 );
 
 gulp.task('watch', function () {
