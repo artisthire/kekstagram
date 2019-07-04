@@ -169,7 +169,7 @@
 
     pictureElement.querySelector('.picture__img').src = templateData.url;
     pictureElement.querySelector('.picture__likes').textContent = templateData.likes;
-    pictureElement.querySelector('.picture__comments').textContent = templateData.comments.join('\n');
+    pictureElement.querySelector('.picture__comments').textContent = templateData.comments.length;
 
     return pictureElement;
   }
