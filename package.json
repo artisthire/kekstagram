@@ -13,7 +13,6 @@
     "browser-sync": "^2.26.7",
     "cross-env": "^5.2.0",
     "del": "^5.0.0",
-    "eslint": "3.9.0",
     "eslint-config-htmlacademy": "^0.2.3",
     "gulp": "^4.0.2",
     "gulp-changed": "^4.0.0",

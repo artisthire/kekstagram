@@ -24,13 +24,11 @@ body {
   color: #ffe753;
 }
 
-.invisible {
+.hidden {
   display: none;
 }
 
-.hidden {
-  visibility: hidden;
-}
+/* Фильтры */
 
 .filters {
   padding: 15px 0;
@@ -62,14 +60,15 @@ body {
   border-radius: 2px;
 }
 
-.upload {
+/* Форма */
+
+.upload-form {
   position: absolute;
   left: 50%;
 
   width: 582px;
   height: 569px;
   margin: 5px 0 0 -291px;
-  margin-top: 5px;
   padding: 0;
 
   background: url("../img/logo-background-1.jpg") center;
@@ -92,55 +91,58 @@ body {
   overflow: auto;
 }
 
-.upload-form {
+.upload-image {
   width: 582px;
   height: 569px;
-}
-
-.upload-image {
   position: relative;
   z-index: 1;
 
   background: url("../img/logo-mask.png") no-repeat center;
 }
 
-.upload-filter {
-  position: relative;
+.upload-effect {
+  display: flex;
+  justify-content: center;
   margin: 0 auto;
+  text-align: center;
 }
 
-.upload-filter-preview {
-  background-image: url('../img/upload-default-image.png');
+.upload-effect__container {
+  position: relative;
+}
+
+.upload-effect-preview {
+  background-image: url('../img/upload-default-image.jpg');
   background-position: center;
   background-repeat: no-repeat;
 }
 
-.upload-filter-label-chrome .upload-filter-preview,
-.filter-chrome {
+.upload-effect-label-chrome .upload-effect-preview,
+.effect-chrome {
   -webkit-filter: grayscale(1);
           filter: grayscale(1);
 }
 
-.upload-filter-label-sepia .upload-filter-preview,
-.filter-sepia {
+.upload-effect-label-sepia .upload-effect-preview,
+.effect-sepia {
   -webkit-filter: sepia(1);
           filter: sepia(1);
 }
 
-.upload-filter-label-marvin .upload-filter-preview,
-.filter-marvin {
+.upload-effect-label-marvin .upload-effect-preview,
+.effect-marvin {
   -webkit-filter: invert(100%);
           filter: invert(100%);
 }
 
-.upload-filter-label-phobos .upload-filter-preview,
-.filter-phobos {
+.upload-effect-label-phobos .upload-effect-preview,
+.effect-phobos {
   -webkit-filter: blur(5px);
           filter: blur(5px);
 }
 
-.upload-filter-label-heat .upload-filter-preview,
-.filter-heat {
+.upload-effect-label-heat .upload-effect-preview,
+.effect-heat {
   -webkit-filter: brightness(3);
           filter: brightness(3);
 }
@@ -268,8 +270,10 @@ body {
   border-radius: 0 50% 50% 0;
 }
 
-/* Фильтры */
-.upload-filter-controls {
+/* Эффекты */
+.upload-effect-controls {
+  position: relative;
+
   width: 470px;
   margin: 10px auto 30px;
   padding: 0;
@@ -283,21 +287,17 @@ body {
   border: 0;
 }
 
-.upload-filter {
-  text-align: center;
-}
-
-.filter-image-preview {
+.effect-image-preview {
   vertical-align: middle;
 }
 
-.upload-filter-controls input[type=radio] {
+.upload-effect-controls input[type=radio] {
   position: absolute;
 
   visibility: hidden;
 }
 
-.upload-filter-label {
+.upload-effect-label {
   display: inline-block;
   margin: 0 5px;
 
@@ -309,17 +309,17 @@ body {
   cursor: pointer;
 }
 
-.upload-filter-label:hover,
-input[type=radio]:checked + .upload-filter-label {
+.upload-effect-label:hover,
+input[type=radio]:checked + .upload-effect-label {
   color: #ffe753;
 }
 
-input[type=radio]:checked + .upload-filter-label .upload-filter-preview {
+input[type=radio]:checked + .upload-effect-label .upload-effect-preview {
   border-color: #ffe753;
 }
 
 /* Превью */
-.upload-filter-preview {
+.upload-effect-preview {
   display: block;
   width: 70px;
   height: 70px;
@@ -334,7 +334,7 @@ input[type=radio]:checked + .upload-filter-label .upload-filter-preview {
 }
 
 /* Слайдер. Регулировка глубины фильтра */
-.upload-filter-level {
+.upload-effect-level {
   width: 495px;
   height: 33px;
 
@@ -343,13 +343,13 @@ input[type=radio]:checked + .upload-filter-label .upload-filter-preview {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 0;
+  top: -60px;
 
   background: rgba(0, 0, 0, 0.6);
   border-radius: 33px;
 }
 
-.upload-filter-level-line {
+.upload-effect-level-line {
   height: 5px;
 
   position: absolute;
@@ -361,7 +361,7 @@ input[type=radio]:checked + .upload-filter-label .upload-filter-preview {
   background: rgba(255, 231, 81, 0.4);
 }
 
-.upload-filter-level-pin {
+.upload-effect-level-pin {
   width: 18px;
   height: 18px;
 
@@ -377,13 +377,31 @@ input[type=radio]:checked + .upload-filter-label .upload-filter-preview {
   cursor: move;
 }
 
-.upload-filter-level-val {
+.upload-effect-level-val {
   width: 20%;
   height: 100%;
 
   position: absolute;
 
   background: #ffe753;
+}
+
+/* Хэш-теги */
+.upload-form-hashtags {
+  width: 470px;
+
+  font: 18px "Open Sans";
+  color: #9a9a9a;
+
+  display: block;
+  margin: 0 auto 30px;
+  padding: 8px 10px;
+
+  border-radius: 5px;
+}
+
+.upload-form-hashtags:focus {
+  color: #000;
 }
 
 /* Описание */
@@ -523,7 +541,7 @@ input[type=radio]:checked + .upload-filter-label .upload-filter-preview {
   box-sizing: border-box;
   width: 182px;
   height: 182px;
-  margin-right: 10px;
+  margin-right: 11px;
   margin-bottom: 14px;
   overflow: hidden;
 
@@ -535,10 +553,6 @@ input[type=radio]:checked + .upload-filter-label .upload-filter-preview {
   margin-bottom: -34px;
 
   border: 0;
-}
-
-.picture:nth-of-type(2n-1):nth-of-type(-n+6) {
-  margin-right: 600px;
 }
 
 .picture-load-failure {
@@ -631,13 +645,52 @@ input[type=radio]:checked + .upload-filter-label .upload-filter-preview {
   }
 }
 
+@media (min-width: 1000px) and (max-width: 1379px) {
+  .picture:nth-child(1) {
+    margin-right: 600px;
+  }
+  .picture:nth-child(3) {
+    margin-right: 600px;
+  }
+  .picture:nth-child(5) {
+    margin-right: 600px;
+  }
+
+  .picture:nth-child(2),
+  .picture:nth-child(4),
+  .picture:nth-child(6) {
+    /*margin-left: 11px;*/
+  }
+
+  .picture:nth-child(2),
+  .picture:nth-child(4),
+  .picture:nth-child(6),
+  .picture:nth-child(11),
+  .picture:nth-child(16),
+  .picture:nth-child(21) {
+    margin-right: 0;
+  }
+}
+
+@media only screen and (max-width: 999px){
+  .picture:nth-child(1) {
+    margin-right: 600px;
+  }
+  .picture:nth-child(2) {
+    margin-right: 600px;
+  }
+  .picture:nth-child(3) {
+    margin-right: 600px;
+  }
+}
+
 .gallery-overlay {
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 1;
+  z-index: 100;
 
   overflow: auto;
 
@@ -690,7 +743,6 @@ input[type=radio]:checked + .upload-filter-label .upload-filter-preview {
 }
 
 .gallery-overlay-controls-comments {
-  width: 410px;
   margin-right: 150px;
 
   text-align: left;
