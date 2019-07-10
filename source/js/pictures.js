@@ -26,9 +26,9 @@
   // -----------------------------------------------
   // отображение большой картинки с комментариями
   var bigPictureContainerElement = document.querySelector('.big-picture');
-  bigPictureContainerElement.classList.remove('hidden');
+  // bigPictureContainerElement.classList.remove('hidden');
 
-  modifyBigPictureElement(dataPictures[0]);
+  // modifyBigPictureElement(dataPictures[0]);
 
   // временное сокрытие элементов управления
   bigPictureContainerElement.querySelector('.social__comment-count')
@@ -194,3 +194,103 @@
   }
 
 })();
+
+var ESC_KEY_CODE = 27;
+var btnInputFile = document.querySelector('#upload-file');
+var imgUploadPopup = document.querySelector('.img-upload__overlay');
+var btnCloseImgUploadPopup = imgUploadPopup.querySelector('#upload-cancel');
+var imageScaleBtnContainer = imgUploadPopup.querySelector('.scale');
+var btnImageScaleSmaller = imageScaleBtnContainer.querySelector('.scale__control--smaller');
+var btnImageScaleBigger = imageScaleBtnContainer.querySelector('.scale__control--bigger');
+var outputImageScaleValue = imageScaleBtnContainer.querySelector('.scale__control--value');
+var imgPreviewElement = imgUploadPopup.querySelector('.img-upload__preview > img');
+
+btnInputFile.addEventListener('change', openImgUploadPopup);
+
+btnCloseImgUploadPopup.addEventListener('click', closeImgUploadPopup);
+
+
+function openImgUploadPopup() {
+
+  imgUploadPopup.classList.remove('hidden');
+  // добавляем глобальный слушатель по нажатию клавиши ESC
+  document.addEventListener('keydown', onImgUploadPopupKeydown);
+
+  // добавляем обработку кнопок изменения размеров изображения
+  imageScaleBtnContainer.addEventListener('click', scaleUploadImage);
+
+}
+
+function closeImgUploadPopup() {
+
+  imgUploadPopup.classList.add('hidden');
+  // удаляем глобальный слушатель по нажатию клавиши ESC
+  document.removeEventListener('keydown', onImgUploadPopupKeydown);
+  // сбрасываем значение input[type='file'] для повторной сработки события 'change' если изображение будет тем же самым
+  btnInputFile.value = '';
+
+  // удаляем обработчик для кнопок увеличения/уменьшения изображений
+  // сбрасываем настройки кнопок и изображения в исходное состояние
+  imageScaleBtnContainer.removeEventListener('click', scaleUploadImage);
+  imgPreviewElement.style.transform = '';
+  outputImageScaleValue.value = '100%';
+  btnImageScaleBigger.disabled = true;
+
+}
+
+function onImgUploadPopupKeydown(evt) {
+
+  if (evt.keyCode === ESC_KEY_CODE) {
+
+    closeImgUploadPopup();
+
+  }
+
+}
+
+function scaleUploadImage(evt) {
+
+  var SCALE_STEP = 5;
+  var SCALE_MIN_VALUE = 25;
+  var SCALE_MAX_VALUE = 100;
+
+  // если клик вне кнопок уменьшения и увеличения изображения, ничего не делаем
+  if (evt.target.closest('.scale__control--smaller') !== btnImageScaleSmaller &&
+      evt.target.closest('.scale__control--bigger') !== btnImageScaleBigger) {
+
+    return;
+
+  }
+
+  // задаем знак числа шага уменьшения/увеличения изображения
+  var step = (evt.target.closest('.scale__control--smaller') === btnImageScaleSmaller) ? -SCALE_STEP : SCALE_STEP;
+  // считываем текущее значение на кнопке уменьшения/увеличения изображения
+  var currentValue = parseInt(outputImageScaleValue.value, 10);
+
+  // увеличиваем значение на шаг и ограничиваем его согласно максимального и минимального значения
+  // а также отключаем возможность взаимодействия с кнопками если выходим за пределы ограничений
+  currentValue += step;
+
+  if (currentValue >= SCALE_MAX_VALUE) {
+
+    currentValue = SCALE_MAX_VALUE;
+    btnImageScaleBigger.disabled = true;
+
+  } else if (currentValue <= SCALE_MIN_VALUE) {
+
+    currentValue = SCALE_MIN_VALUE;
+    btnImageScaleSmaller.disabled = true;
+
+  } else {
+
+    btnImageScaleSmaller.disabled = false;
+    btnImageScaleBigger.disabled = false;
+
+  }
+
+  // записываем новое значение в поле отображения величины увеличения
+  outputImageScaleValue.value = currentValue + '%';
+  // изменяем маштаб изображения
+  imgPreviewElement.style.transform = 'scale(' + currentValue / 100 + ')';
+
+}
