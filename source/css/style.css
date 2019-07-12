@@ -305,6 +305,7 @@ main {
 }
 
 .img-upload__wrapper {
+  position: relative;
   margin: 0 auto;
   width: 582px;
 
