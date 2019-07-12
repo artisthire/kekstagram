@@ -8,6 +8,10 @@
   var picturesContainerElement = document.querySelector('.pictures');
   var bigPictureContainer = document.querySelector('.big-picture');
   var btnCloseBigPictures = bigPictureContainer.querySelector('#picture-cancel');
+  var bigPictureImgElement = bigPictureContainer.querySelector('.big-picture__img > img');
+  var bigPictureLikeCountElement = bigPictureContainer.querySelector('.likes-count');
+  var bigPictureCommentsCountElement = bigPictureContainer.querySelector('.comments-count');
+  var bigPictureDescriptionElement = bigPictureContainer.querySelector('.social__caption');
 
   // шаблон для фотографий
   var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
@@ -44,10 +48,10 @@
    */
   function modifyBigPictureElement(data) {
 
-    bigPictureContainer.querySelector('.big-picture__img > img').src = data.url;
-    bigPictureContainer.querySelector('.likes-count').textContent = data.likes;
-    bigPictureContainer.querySelector('.comments-count').textContent = data.comments.length;
-    bigPictureContainer.querySelector('.social__caption').textContent = data.description;
+    bigPictureImgElement.src = data.url;
+    bigPictureLikeCountElement.textContent = data.likes;
+    bigPictureCommentsCountElement.textContent = data.comments.length;
+    bigPictureDescriptionElement.textContent = data.description;
 
     // создаем и заполняем массив элементов LI для списка комментариев
     var socialCommentElements = [];
@@ -238,6 +242,10 @@
     // заполнение данными и отображение большой картинки
     modifyBigPictureElement(dataPicture);
     bigPictureContainer.classList.remove('hidden');
+    bigPictureImgElement.focus();
+
+    //добавляем класс открытия модального окна к BODY
+    document.body.classList.add('modal-open');
 
     // добавление обработчиков закрытия окна
     btnCloseBigPictures.addEventListener('click', onBtnCloseBigPickturePopupClick);
@@ -254,6 +262,7 @@
   function onBtnCloseBigPickturePopupClick(evt) {
 
     bigPictureContainer.classList.add('hidden');
+    document.body.classList.remove('modal-open');
 
     // удаляем обработчики закрытия окна
     btnCloseBigPictures.removeEventListener('click', onBtnCloseBigPickturePopupClick);
@@ -324,6 +333,7 @@
   function onBtnUploadFileChange() {
 
     imgUploadPopup.classList.remove('hidden');
+    btnImgScaleSmaller.focus();
 
     btnCloseImgUploadPopup.addEventListener('click', onBtnCloseUploadPopupClick);
     // добавляем глобальный слушатель по нажатию клавиши ESC
