@@ -87,7 +87,7 @@ gulp.task('js', function () {
       }
     }))
     .pipe(gulpIf(isDev, sourcemaps.init()))
-    .pipe(concat('script.min.js'))
+    //.pipe(concat('script.min.js'))
     .pipe(gulpIf(!isDev, uglify()))
     .pipe(gulpIf(isDev, sourcemaps.write('/')))
     .pipe(gulp.dest(patch.dest.js))
