@@ -11,14 +11,15 @@
   var btnsContainer = document.querySelector('.scale');
   var btnScaleSmaller = btnsContainer.querySelector('.scale__control--smaller');
   var btnScaleBigger = btnsContainer.querySelector('.scale__control--bigger');
-  var scaleOuputElement = btnsContainer.querySelector('.scale__control--value');
+  var scaleValueOutput = btnsContainer.querySelector('.scale__control--value');
 
   window.scaleImg = {
 
     onBtnScaleClick: onBtnScaleClick,
+    btnsContainer: btnsContainer,
     btnScaleSmaller: btnScaleSmaller,
     btnScaleBigger: btnScaleBigger,
-    scaleOuputElement: scaleOuputElement
+    scaleValueOutput: scaleValueOutput
 
   };
 
@@ -27,10 +28,10 @@
    * входные параметры берет из внешнего замыкания
    *
    * @param {Object} evt - объект события
-   * @param {Object} targetPreview - HTML-элемент, содержащий картинку для изменения ее размера
+   * @param {Object} targetImgPreview - HTML-элемент, содержащий картинку для изменения ее размера
    *
    */
-  function onBtnScaleClick(evt, targetPreview) {
+  function onBtnScaleClick(evt, targetImgPreview) {
 
     // если клик вне кнопок уменьшения и увеличения изображения, ничего не делаем
     if (evt.target.closest('.scale__control--smaller') !== btnScaleSmaller &&
@@ -43,7 +44,7 @@
     // задаем знак числа шага уменьшения/увеличения изображения
     var step = (evt.target.closest('.scale__control--smaller') === btnScaleSmaller) ? -SCALE_STEP : SCALE_STEP;
     // считываем текущее значение на кнопке уменьшения/увеличения изображения
-    var currentValue = parseInt(scaleOuputElement.value, 10);
+    var currentValue = parseInt(scaleValueOutput.value, 10);
 
     // увеличиваем значение на шаг и ограничиваем его согласно максимального и минимального значения
     // а также отключаем возможность взаимодействия с кнопками если выходим за пределы ограничений
@@ -67,9 +68,9 @@
     }
 
     // записываем новое значение в поле отображения величины увеличения
-    scaleOuputElement.value = currentValue + '%';
+    scaleValueOutput.value = currentValue + '%';
     // изменяем маштаб изображения
-    targetPreview.style.transform = 'scale(' + currentValue / 100 + ')';
+    targetImgPreview.style.transform = 'scale(' + currentValue / 100 + ')';
 
   }
 

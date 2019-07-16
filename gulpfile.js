@@ -7,10 +7,10 @@ var notify = require('gulp-notify');
 var gulpIf = require('gulp-if');
 var changed = require('gulp-changed');
 var debug = require('gulp-debug');
-var sourcemaps = require('gulp-sourcemaps');
+// var sourcemaps = require('gulp-sourcemaps');
 var browserSync = require('browser-sync').create();
 
-var concat = require('gulp-concat');
+// var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 
 var patch = {
@@ -86,10 +86,10 @@ gulp.task('js', function () {
         this.emit('end');
       }
     }))
-    .pipe(gulpIf(isDev, sourcemaps.init()))
-    //.pipe(concat('script.min.js'))
+    // .pipe(gulpIf(isDev, sourcemaps.init()))
+    // .pipe(concat('script.min.js'))
     .pipe(gulpIf(!isDev, uglify()))
-    .pipe(gulpIf(isDev, sourcemaps.write('/')))
+    // .pipe(gulpIf(isDev, sourcemaps.write('/')))
     .pipe(gulp.dest(patch.dest.js))
     .pipe(browserSync.reload({stream: true}));
 });

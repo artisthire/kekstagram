@@ -9,6 +9,7 @@
   var modalLikeCountElement = modalContainer.querySelector('.likes-count');
   var modalCommentsCountElement = modalContainer.querySelector('.comments-count');
   var modalDescriptionElement = modalContainer.querySelector('.social__caption');
+  var modalCommentElement = modalContainer.querySelector('.social__footer-text');
 
   // обработчик отображения большой картинки при клике на одну из ссылок
   // обработчик делегирован на общий контейнер
@@ -29,7 +30,7 @@
 
     var targetContainer = evt.target.closest('.picture');
 
-    // если клик не по ссылке на большую картинку, то не обрабатываем событие
+    // если клик не по ссылке на миниатюру картинки, то не обрабатываем событие
     if (!targetContainer) {
 
       return;
@@ -105,7 +106,7 @@
 
       // если в фокусе находятся внутренний элемент ввода комментария
       // окно не закрываем
-      if (document.activeElement.classList.contains('social__footer-text')) {
+      if (window.utilities.eventInElement(evt.target, [modalCommentElement])) {
 
         return;
 
