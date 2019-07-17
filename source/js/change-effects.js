@@ -22,8 +22,9 @@
   var sliderBackgroundElement = sliderDepthElement.parentElement;
   var sliderEffectValueOutput = sliderEffectsContainer.querySelector('.effect-level__value');
 
+  var isChangedEffect = false;
   // хранит текущий элемент выбранного эффекта
-  var currentSelectedInput = null;
+  var currentSelectedEffect = null;
 
   // хранит ссылку на изображение, к котором применяется эффект
   var imgPreviewElement = null;
@@ -37,12 +38,10 @@
   window.changeEffects = {
 
     bntsContainer: bntsContainer,
-    btnDefaultEffect: btnDefaultEffect,
-    sliderEffectsContainer: sliderEffectsContainer,
     sliderPinElement: sliderPinElement,
-    sliderEffectValueOutput: sliderEffectValueOutput,
     switchImageEffect: switchImageEffect,
-    slideImageEffect: slideImageEffect
+    slideImageEffect: slideImageEffect,
+    resetImageEffect: resetImageEffect
 
   };
 
@@ -54,6 +53,8 @@
    *
    */
   function switchImageEffect(targetImgPreview) {
+
+    isChangedEffect = true;
 
     // записываем в глобальную переменную ссылку на картинку к которой будут применяться эффекты
     imgPreviewElement = targetImgPreview;
@@ -69,9 +70,9 @@
     sliderDepthElement.style.width = '100%';
 
     // значение выбранного эффекта сохраняем в глобальную переменную
-    currentSelectedInput = document.activeElement;
+    currentSelectedEffect = document.activeElement;
 
-    if (currentSelectedInput.value === IMG_EFFECT_RESET_STRING) {
+    if (currentSelectedEffect.value === IMG_EFFECT_RESET_STRING) {
 
       sliderEffectsContainer.style.display = 'none';
 
@@ -81,7 +82,7 @@
       sliderEffectsContainer.style.display = '';
 
       // добавялем класс к карнитке согласно выбранного эффекта
-      imgPreviewElement.classList.add(IMG_EFFECT_CLASS_PATTERN + currentSelectedInput.value);
+      imgPreviewElement.classList.add(IMG_EFFECT_CLASS_PATTERN + currentSelectedEffect.value);
 
     }
   }
@@ -120,7 +121,7 @@
     // получаем текущую коодринату сдвига пина с учетом координат контейнера и начальной точки клика
     var coordX = evt.pageX - containerCoordX - shiftCoordX;
 
-    // накладываем ограничение координа контейнером
+    // накладываем ограничение координаты границами контейнера
     coordX = Math.max(coordX, pinMinCoordX);
     coordX = Math.min(coordX, pinMaxCoordX);
 
@@ -171,10 +172,10 @@
     var depthLineElementWidth = ~~sliderDepthElement.offsetWidth;
 
     // получаем параметры для применения выбранного эффекта
-    var effectFilterName = IMG_EFFECTS[currentSelectedInput.value].filterName;
-    var effectMinValue = IMG_EFFECTS[currentSelectedInput.value].minValue;
-    var effectMaxValue = IMG_EFFECTS[currentSelectedInput.value].maxValue;
-    var effectFilterUnit = IMG_EFFECTS[currentSelectedInput.value].filterUnit;
+    var effectFilterName = IMG_EFFECTS[currentSelectedEffect.value].filterName;
+    var effectMinValue = IMG_EFFECTS[currentSelectedEffect.value].minValue;
+    var effectMaxValue = IMG_EFFECTS[currentSelectedEffect.value].maxValue;
+    var effectFilterUnit = IMG_EFFECTS[currentSelectedEffect.value].filterUnit;
 
     // вычисляем уровень эффекта по пропорции элементов, минимальному и максимальному значению эффекта
     var valueEffect = effectMinValue + (depthLineElementWidth / backgroundLineElementWidth * (effectMaxValue - effectMinValue));
@@ -197,18 +198,37 @@
    * @param {Object} currentValue - объект с величиной уровня эффекта и строковым представлением для примерения в CSS filter
    *
    */
-
   function setEffectLevel(currentValue) {
 
     // устанавливаем значение поля input для уровня эффекта
     sliderEffectValueOutput.value = currentValue.valueEffect;
 
-    // получаем строку записи в стили изображения согласно выбранного фильтра
-    var effectFilterString = currentValue.effectFilterString;
-
     // применяем фильтр к изображению через CSS стили
-    imgPreviewElement.style.WebkitFilter = effectFilterString;
-    imgPreviewElement.style.filter = effectFilterString;
+    imgPreviewElement.style.WebkitFilter = currentValue.effectFilterString;
+    imgPreviewElement.style.filter = currentValue.effectFilterString;
+
+  }
+
+  /**
+   * Применяется для сброса слайдера эффектов в начальное состояние при закрытии окна
+   *
+   */
+  function resetImageEffect() {
+
+    if (isChangedEffect) {
+
+      sliderEffectsContainer.style.display = 'none';
+      sliderEffectValueOutput.value = 100;
+      btnDefaultEffect.checked = true;
+      // также отсутствует класс типа эффекта на картинке
+      imgPreviewElement.className = '';
+      imgPreviewElement.style.WebkitFilter = '';
+      imgPreviewElement.style.filter = '';
+
+      sliderPinElement.style.left = '100%';
+      sliderDepthElement.style.width = '100%';
+
+    }
 
   }
 

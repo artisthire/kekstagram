@@ -4,7 +4,7 @@
 
   // обработывает отображение модали загрузки изображения
   // зависит от scale-img.js - Обработка изменения величины изображения
-  // и от change-effects.js - Обработка изменения эффекта
+  // и от change-effects.js - Обработка изменения эффекта наложенного на изображение
 
   var btnUploadFile = document.querySelector('#upload-file');
   var modalContainer = document.querySelector('.img-upload__overlay');
@@ -73,11 +73,7 @@
     // убираем обработку события при передвижении слайдера изменения эффектов
     window.changeEffects.sliderPinElement.removeEventListener('mousedown', onPinSliderImageEffectsMousedown);
     // изначально активирован оригинальный эффект, поэтому слайдер уровня эффекта скрыт
-    window.changeEffects.sliderEffectsContainer.style.display = 'none';
-    window.changeEffects.sliderEffectValueOutput.value = 100;
-    window.changeEffects.btnDefaultEffect.checked = true;
-    // также отсутствует класс типа эффекта на картинке
-    imgPreviewElement.className = '';
+    window.changeEffects.resetImageEffect();
 
   }
 

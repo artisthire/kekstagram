@@ -58,18 +58,7 @@
    */
   function eventInElement(target, elements) {
 
-
-    for (var i = 0; i < elements.length; i++) {
-
-      if (elements[i].contains(target)) {
-
-        return true;
-
-      }
-
-    }
-
-    return false;
+    return ~elements.indexOf(target);
 
   }
 
