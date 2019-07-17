@@ -37,8 +37,8 @@
     // событие делегируется на уровень контейнера
     window.changeEffects.bntsContainer.addEventListener('change', onBtnsSwitchImageEffectChange);
 
-    // добавляем обработку события при передвижении слайдера изменения эффектов
-    window.changeEffects.sliderPinElement.addEventListener('mousedown', onPinSliderImageEffectsMousedown);
+    // инициируем обработчик изменения эффектов при сдвиге указателя слайдера
+    window.changeEffects.slideImageEffect();
 
   }
 
@@ -70,9 +70,7 @@
     // удаляем обработку события от кнопок изменения эффектов для изображения
     window.changeEffects.bntsContainer.removeEventListener('change', onBtnsSwitchImageEffectChange);
 
-    // убираем обработку события при передвижении слайдера изменения эффектов
-    window.changeEffects.sliderPinElement.removeEventListener('mousedown', onPinSliderImageEffectsMousedown);
-    // изначально активирован оригинальный эффект, поэтому слайдер уровня эффекта скрыт
+    // сбрасываем эффекты, наложенные с помощью стиля filter
     window.changeEffects.resetImageEffect();
 
   }
@@ -124,21 +122,7 @@
 
     evt.preventDefault();
 
-    window.changeEffects.switchImageEffect(imgPreviewElement);
-
-  }
-
-  /**
-   * Передает обработку события изменения уровня наложенного эффекта в отдельный модуль
-   *
-   * @param {Object} evt - объект события
-   *
-   */
-  function onPinSliderImageEffectsMousedown(evt) {
-
-    evt.preventDefault();
-
-    window.changeEffects.slideImageEffect(evt);
+    window.changeEffects.switchImageEffect();
 
   }
 
