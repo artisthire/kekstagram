@@ -6,8 +6,8 @@
   // предполагает, что координаты указателя задаются позиционированием внутри контейнера с помощью свойства стилей left
 
   var sliderContainer = null; // контейнер, внутри которого перемещается указатель
-  var sliderPin = null; // указатель
-  var sliderDepth = null; // заполнитель
+  var sliderPin = null; // указатель слайдера
+  var sliderDepth = null; //  заполнитель слайдера между его левым краем и положением указателя
 
   // величины обновляются при каждом Mousedown, дабы учесть возможность изменнения габаритов слайдера
   var shiftCoordX = 0; // сдвиг между координатой клика и величиной координаты left в CSS для указателя
@@ -27,6 +27,15 @@
 
   };
 
+  /**
+   * Инициализация слайдера
+   *
+   * @param {Object} callback - функция-каллбек, которая вызывается при изменении положения слайдера
+   * @param {Object} container - HTML-элемент контейнер других элементов слайдера
+   * @param {Object} pin - HTML-элемент указатель слайдера
+   * @param {Object} depth - HTML-элемент заполнитель слайдера между его левым краем и положением указателя
+   *
+   */
   function initSlider(callback, container, pin, depth) {
 
     sliderContainer = container;
@@ -41,7 +50,10 @@
 
   }
 
-
+  /**
+   * Функция удаляет обработчики и переменные слайдера, когда он уже не нужен
+   *
+   */
   function destroySlider() {
 
     sliderPin.removeEventListener('mousedown', onSliderPinMousedown);
