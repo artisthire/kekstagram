@@ -10,6 +10,8 @@
   var modalContainer = document.querySelector('.img-upload__overlay');
   var modalCloseBtn = modalContainer.querySelector('#upload-cancel');
 
+  var form = document.querySelector('#upload-select-image');
+
   var imgPreviewElement = modalContainer.querySelector('.img-upload__preview > img');
   var hashtagInput = modalContainer.querySelector('.text__hashtags');
   var descriptionInput = modalContainer.querySelector('.text__description');
@@ -24,6 +26,8 @@
 
     modalContainer.classList.remove('hidden');
     modalContainer.focus();
+
+    form.addEventListener('submit', onFormSubmit);
 
     modalCloseBtn.addEventListener('click', onBtnCloseModalClick);
     // добавляем глобальный слушатель по нажатию клавиши ESC
@@ -54,6 +58,8 @@
 
     modalContainer.classList.add('hidden');
 
+    form.removeEventListener('submit', onFormSubmit);
+
     modalCloseBtn.removeEventListener('click', onBtnCloseModalClick);
     // удаляем глобальный слушатель по нажатию клавиши ESC
     document.removeEventListener('keydown', onModalEscPress);
@@ -66,6 +72,8 @@
     imgPreviewElement.style.transform = '';
     window.scaleImg.scaleValueOutput.value = '100%';
     window.scaleImg.btnScaleBigger.disabled = true;
+    hashtagInput.value = '';
+    descriptionInput.value = '';
 
     // удаляем обработку события от кнопок изменения эффектов для изображения
     window.changeEffects.bntsContainer.removeEventListener('change', onBtnsSwitchImageEffectChange);
@@ -87,7 +95,7 @@
 
       // если в фокусе находятся внутренние элементы ввода хэштега или комментария
       // окно не закрываем
-      if (window.utilities.eventInElement(evt.target, [hashtagInput, descriptionInput])) {
+      if (~[hashtagInput, descriptionInput].indexOf(evt.target)) {
 
         return;
 
@@ -123,6 +131,26 @@
     evt.preventDefault();
 
     window.changeEffects.switchImageEffect();
+
+  }
+
+  /**
+   * Пересылает данные формы через AJAX
+   *
+   * @param {Object} evt - объект события
+   *
+   */
+  function onFormSubmit(evt) {
+
+    evt.preventDefault();
+
+    window.backend.sendData(window.utilities.showErrorMessage, closeModal, new FormData(form));
+
+    function closeModal() {
+
+      onBtnCloseModalClick(evt);
+
+    }
 
   }
 

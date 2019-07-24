@@ -8,8 +8,8 @@
 
     insertTemplatesNodes: insertTemplatesNodes,
     isEscKeyPress: isEscKeyPress,
-    eventInElement: eventInElement,
-    getCoords: getCoords
+    getCoords: getCoords,
+    showErrorMessage: showErrorMessage
 
   };
 
@@ -48,21 +48,6 @@
   }
 
   /**
-   * Проверяет, является ли источник события элементов или ребенком одного из элементов заданного списка
-   * Например, можно использовать для отмены действия, если кнопка ESC была нажата при фокусе в одном из заданных полей
-   *
-   * @param {object} target - Элемент на котором произошло событие
-   * @param {array} elements - список элементов, с которым сравнивается
-   * @return {boolean} - true, если источник события является одним из элементов переданного списка или его ребенком
-   *
-   */
-  function eventInElement(target, elements) {
-
-    return ~elements.indexOf(target);
-
-  }
-
-  /**
    * Возвращает координаты переданного HTML элемента, приведенные в значение относительно документа, а не окна
    *
    * @param {object} elem - HTML-элемент, координаты которого нужно определить
@@ -82,6 +67,49 @@
       left: box.left + pageXOffset
 
     };
+
+  }
+
+  /**
+   * Используется для отображения ошибок выполнения операций при взаимодействии с сервером
+   *
+   * @param {string} message - текст сообщение об ошибки, который передает вызывающая функция
+   *
+   */
+  function showErrorMessage(message) {
+
+    var container = document.createElement('div');
+
+    container.style.position = 'fixed';
+    container.style.top = 0;
+    container.style.bottom = 0;
+    container.style.left = 0;
+    container.style.right = 0;
+
+    container.style.zIndex = 999;
+
+    container.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
+
+    var messageElement = document.createElement('div');
+
+    messageElement.style.position = 'absolute';
+    messageElement.style.top = '50%';
+    messageElement.style.left = '50%';
+    messageElement.style.transform = 'translate(-50%, -50%)';
+
+    messageElement.style.minHeight = '100px';
+    messageElement.style.padding = '15px 20px';
+
+    messageElement.style.backgroundColor = 'rgb(200, 10, 0)';
+    messageElement.style.fontSize = '20px';
+    messageElement.style.lineHeight = 1.3;
+    messageElement.style.textAlign = 'center';
+
+    messageElement.innerHTML = 'Перезагрузите страницу. Произошла ошибка:<br><br>' + message;
+
+    container.appendChild(messageElement);
+
+    document.body.appendChild(container);
 
   }
 

@@ -87,6 +87,7 @@
 
     modalContainer.classList.add('hidden');
     document.body.classList.remove('modal-open');
+    modalCommentElement.value = '';
 
     // удаляем обработчики закрытия окна
     modalCloseBtn.removeEventListener('click', onBtnCloseModalClick);
@@ -106,7 +107,7 @@
 
       // если в фокусе находятся внутренний элемент ввода комментария
       // окно не закрываем
-      if (window.utilities.eventInElement(evt.target, [modalCommentElement])) {
+      if (~[modalCommentElement].indexOf(evt.target)) {
 
         return;
 
@@ -148,17 +149,17 @@
     /**
      * Создает HTML-элемент LI содержащий разметку для каждого отдельного комментария под фотографией
      *
-     * @param {string} commentText - Текст комментария
+     * @param {string} commentData - Текст комментария
      * @return {object} DOM-элемент, содержащий разметку для вставки коментариев в контейнер
      */
-    function createSocialCommentElement(commentText) {
+    function createSocialCommentElement(commentData) {
 
       var li = document.createElement('li');
       li.className = 'social__comment';
 
-      li.innerHTML = '<img class="social__picture" src="img/avatar-' + (Math.floor(Math.random() * (6 - 1)) + 1) +
-        '.svg" alt="Аватар комментатора фотографии" width="35" height="35"> <p class="social__text">' +
-         commentText + '</p>';
+      li.innerHTML = '<img class="social__picture" src="' + commentData.avatar +
+        '" alt="Аватар комментатора фотографии" width="35" height="35"> <p class="social__text">' +
+         commentData.message + '<br><b>' + commentData.name + '</b></p>';
 
       return li;
     }

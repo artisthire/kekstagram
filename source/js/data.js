@@ -2,8 +2,36 @@
 
 (function () {
 
-  // содержит функционал по ополучению данных из сервера для отображения картинок пользователя
+  // содержит функционал по ополучению данных из сервера для отображения картинок пользователей
 
+  window.backend.loadData(window.utilities.showErrorMessage, loadData);
+
+
+  /**
+   * Используется как каллбек-функция при загрузке данных с сервера через AJAX
+   *
+   * @param {object} uploadData - объект данных, полученных с сервера
+   *
+   */
+  function loadData(uploadData) {
+
+    if (!uploadData && typeof uploadData !== 'object') {
+
+      window.utilities.showErrorMessage('Не получены данные с сервера');
+
+    }
+
+    window.pictures.insertMiniPictures(uploadData);
+
+    window.data = {
+
+      uploadData: uploadData
+
+    };
+
+  }
+
+  /*
   // колличество объектов в массиве данных
   var DATA_PHOTOS_LENGTH = 25;
 
@@ -15,6 +43,7 @@
     uploadData: dataPictures
 
   };
+  */
 
   // временная функция для генерации массива данных, вместо загрузки по сети
 
@@ -24,6 +53,7 @@
    * @param {number} arrLength - Количество объектов с данными, которые будут вставлены в массив
    * @return {array} Массив объектов для вставки в HTML разметку фотографий
    */
+  /*
   function generateTemplateData(arrLength) {
 
     var LIKES_MIN = 15;
@@ -91,5 +121,6 @@
     return templateData;
 
   }
+  */
 
 })();
