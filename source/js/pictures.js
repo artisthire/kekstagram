@@ -2,9 +2,12 @@
 
 (function () {
 
+  var picturesContainerElement = document.querySelector('.pictures');
+
   window.pictures = {
 
-    insertMiniPictures: insertMiniPictures
+    insertMiniPictures: insertMiniPictures,
+    deleteMitiPictures: deleteMitiPictures
 
   };
 
@@ -15,16 +18,6 @@
    *
    */
   function insertMiniPictures(data) {
-
-    if (!data && typeof data !== 'object') {
-
-      window.utilities.showErrorMessage('Не получены данные с сервера либо неправильный формат данных');
-
-      return;
-
-    }
-
-    var picturesContainerElement = document.querySelector('.pictures');
 
     // шаблон для фотографий
     var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
@@ -41,6 +34,7 @@
     // вставляем в контейнер набор элементов, содержащийх HTML разметку картинок на основе шаблона и данных
     window.utilities.insertTemplatesNodes(picturesElements, picturesContainerElement);
 
+    window.imgsFilter.initImgFilterForm();
 
     /**
      * Генерирует DOM-элемент на основе шаблона для картинки
@@ -58,6 +52,22 @@
 
       return pictureElement;
     }
+
+  }
+
+  /**
+   * Используется для удаления всех картинок пользователей
+   *
+   */
+  function deleteMitiPictures() {
+
+    var pictures = picturesContainerElement.querySelectorAll('.picture');
+
+    Array.prototype.forEach.call(pictures, function (currentElement) {
+
+      picturesContainerElement.removeChild(currentElement);
+
+    });
 
   }
 

@@ -9,7 +9,8 @@
     insertTemplatesNodes: insertTemplatesNodes,
     isEscKeyPress: isEscKeyPress,
     getCoords: getCoords,
-    showErrorMessage: showErrorMessage
+    showErrorMessage: showErrorMessage,
+    getUniqueArrayNumbers: getUniqueArrayNumbers
 
   };
 
@@ -110,6 +111,46 @@
     container.appendChild(messageElement);
 
     document.body.appendChild(container);
+
+  }
+
+  /**
+   * Используется для генерации массива уникальных случайных чисел в заданном диапазоне
+   *
+   * @param {number} arrLength - величина массива
+   * @param {number} rangeMin - нижний предел от которого (включая) генерируются случайные числа
+   * @param {number} rangeMax - верхний предел до которого (не включая) генерируются случайные числа
+   *
+   * @return {array} uniqueRandomArray - массив уникальных случайных чисел
+   *
+   */
+  function getUniqueArrayNumbers(arrLength, rangeMin, rangeMax) {
+
+    if (rangeMin >= rangeMax) {
+
+      return [];
+
+    }
+
+    var temp = {};
+
+    while (Object.keys(temp).length < arrLength) {
+
+      var newValue = Math.floor(Math.random() * (rangeMax - rangeMin) + rangeMin);
+
+      // + добавляется, чтобы браузер не воспринял объект как с числовыми ключами и не упорядочил значения
+      temp['+' + newValue] = 'true';
+
+    }
+
+    var uniqueRandomArray = Object.keys(temp).map(function (current) {
+
+      // преобразуем в число
+      return parseInt(current, 10);
+
+    });
+
+    return uniqueRandomArray;
 
   }
 
