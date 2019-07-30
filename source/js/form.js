@@ -35,14 +35,10 @@
 
     // добавляем обработку событий от кнопок изменения размеров изображения
     // событие делегируется на уровень контейнера кнопок
-    window.scaleImg.btnsContainer.addEventListener('click', onBtnScaleImgClick);
+    window.scaleImg.initImgScaler(imgPreviewElement);
 
-    // добавляем обработку события от кнопок изменения эффектов для изображения
-    // событие делегируется на уровень контейнера
-    window.changeEffects.bntsContainer.addEventListener('change', onBtnsSwitchImageEffectChange);
-
-    // инициируем обработчик изменения эффектов при сдвиге указателя слайдера
-    window.changeEffects.slideImageEffect();
+    // инициируем обработчик изменения эффектов
+    window.changeEffects.initImgEffectChanger(imgPreviewElement);
 
   }
 
@@ -66,20 +62,16 @@
     // сбрасываем значение input[type='file'] для повторной сработки события 'change' если изображение будет тем же самым
     btnUploadFile.value = '';
 
-    // удаляем обработчик для кнопок изменения размеров изображения
-    // сбрасываем настройки кнопок и изображения в исходное состояние
-    window.scaleImg.btnsContainer.removeEventListener('click', onBtnScaleImgClick);
-    imgPreviewElement.style.transform = '';
-    window.scaleImg.scaleValueOutput.value = '100%';
-    window.scaleImg.btnScaleBigger.disabled = true;
+    // сбрасываем содержимое полей хэштегов и описания изображения
     hashtagInput.value = '';
     descriptionInput.value = '';
 
-    // удаляем обработку события от кнопок изменения эффектов для изображения
-    window.changeEffects.bntsContainer.removeEventListener('change', onBtnsSwitchImageEffectChange);
+    // удаляем обработчик для кнопок изменения размеров изображения
+    // сбрасываем настройки кнопок и изображения в исходное состояние
+    window.scaleImg.destroyImgScaller();
 
-    // сбрасываем эффекты, наложенные с помощью стиля filter
-    window.changeEffects.resetImageEffect();
+    // удаляем обработчики изменения эффектов и сбрасываем наложенные эффекты в исходное состояние
+    window.changeEffects.destroyImgEffectChanger();
 
   }
 
@@ -104,33 +96,6 @@
       onBtnCloseModalClick(evt);
 
     }
-
-  }
-
-  /**
-   * Передает обработку события клика по кнопкам маштабирования изображения в отдельный модуль
-   *
-   * @param {Object} evt - объект события
-   *
-   */
-  function onBtnScaleImgClick(evt) {
-
-    window.scaleImg.onBtnScaleClick(evt, imgPreviewElement);
-
-  }
-
-
-  /**
-   * Передает обработку события изменения типа наложенного изображения в отедьный модуль
-   *
-   * @param {Object} evt - объект события
-   *
-   */
-  function onBtnsSwitchImageEffectChange(evt) {
-
-    evt.preventDefault();
-
-    window.changeEffects.switchImageEffect();
 
   }
 

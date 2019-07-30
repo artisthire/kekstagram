@@ -5,16 +5,18 @@
   // содержит код для обработки перемещения ползунка слайдера
   // предполагает, что координаты указателя задаются позиционированием внутри контейнера с помощью свойства стилей left
 
-  var sliderContainer = null; // контейнер, внутри которого перемещается указатель
-  var sliderPin = null; // указатель слайдера
-  var sliderDepth = null; //  заполнитель слайдера между его левым краем и положением указателя
+  // контейнер, внутри которого перемещается указатель
+  var sliderContainer = document.querySelector('.effect-level__line');
+  // указатель слайдера
+  var sliderPin = sliderContainer.querySelector('.effect-level__pin');
+  // заполнитель слайдера между его левым краем и положением указателя
+  var sliderDepth = sliderContainer.querySelector('.effect-level__depth');
 
   // величины обновляются при каждом Mousedown, дабы учесть возможность изменнения габаритов слайдера
   var shiftCoordX = 0; // сдвиг между координатой клика и величиной координаты left в CSS для указателя
   var containerCoordX = 0; // координата Х контейнера
   var pinCoordX = 0; // координата сдвига указателя относительно контейнера
   // координаты указателя ограничены шириной контейнера
-  var pinMinCoordX = 0;
   var sliderContainerWidth = 0;
 
   // содержит функцию, которая будет вызываться при перемещении указателя для применения эффектов, для которых используется слайдер
@@ -36,13 +38,7 @@
    * @param {Object} depth - HTML-элемент заполнитель слайдера между его левым краем и положением указателя
    *
    */
-  function initSlider(callback, container, pin, depth) {
-
-    sliderContainer = container;
-    sliderPin = pin;
-    sliderDepth = depth;
-
-    sliderContainerWidth = ~~sliderContainer.offsetWidth;
+  function initSlider(callback) {
 
     callbackFunc = callback;
 
@@ -57,10 +53,6 @@
   function destroySlider() {
 
     sliderPin.removeEventListener('mousedown', onSliderPinMousedown);
-
-    sliderContainer = null;
-    sliderPin = null;
-    sliderDepth = null;
 
     callbackFunc = null;
 
@@ -109,7 +101,7 @@
     pinCoordX = evt.pageX - containerCoordX - shiftCoordX;
 
     // накладываем ограничение координаты границами контейнера
-    pinCoordX = Math.max(pinCoordX, pinMinCoordX);
+    pinCoordX = Math.max(pinCoordX, 0);
     pinCoordX = Math.min(pinCoordX, sliderContainerWidth);
 
     // сдвигаем указатель

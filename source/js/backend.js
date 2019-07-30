@@ -85,7 +85,7 @@
 
       } else {
 
-        option.onError('Сервер сообщил об ошибке!\r\nОшибка: ' + xhr.status + ' ' + xhr.statusText);
+        option.onError('Сервер сообщил об ошибке! Код ошибки - ' + xhr.status);
 
       }
 
