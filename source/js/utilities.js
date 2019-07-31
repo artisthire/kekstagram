@@ -17,20 +17,24 @@
   /**
    * Вставляет группу DOM-элементов на страницу используюя DocumentFragment
    *
-   * @param {object} nodes Список DOM-элементов для вствки в документ
-   * @param {object} root DOM-элемент, куда будет вставлено сгенерированное содержимое
+   * @param {array} nodes - Массив DOM-элементов для вствки в документ
+   * @param {object} root - DOM-элемент, куда будет вставлено сгенерированное содержимое
+   *
    */
   function insertTemplatesNodes(nodes, root) {
 
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < nodes.length; i++) {
+    nodes.reduce(function (container, currentNode) {
 
-      fragment.appendChild(nodes[i]);
+      container.appendChild(currentNode);
 
-    }
+      return container;
+
+    }, fragment);
 
     root.appendChild(fragment);
+
   }
 
   /**

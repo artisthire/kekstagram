@@ -13,7 +13,7 @@
   var sliderDepth = sliderContainer.querySelector('.effect-level__depth');
 
   // величины обновляются при каждом Mousedown, дабы учесть возможность изменнения габаритов слайдера
-  var shiftCoordX = 0; // сдвиг между координатой клика и величиной координаты left в CSS для указателя
+  var shiftCoordX = 0; // сдвиг между начальной координатой клика внутри указателя и координатой левого габарита указателя
   var containerCoordX = 0; // координата Х контейнера
   var pinCoordX = 0; // координата сдвига указателя относительно контейнера
   // координаты указателя ограничены шириной контейнера
@@ -43,6 +43,7 @@
     callbackFunc = callback;
 
     sliderPin.addEventListener('mousedown', onSliderPinMousedown);
+    sliderPin.addEventListener('dragstart', onSliderPinDragStart);
 
   }
 
@@ -53,6 +54,7 @@
   function destroySlider() {
 
     sliderPin.removeEventListener('mousedown', onSliderPinMousedown);
+    sliderPin.removeEventListener('dragstart', onSliderPinDragStart);
 
     callbackFunc = null;
 
@@ -133,5 +135,17 @@
 
   }
 
+
+  /**
+   * Отменяет встроенный в браузер Drag`n`Drop
+   *
+   * @param {Object} evt - объект события
+   *
+   */
+  function onSliderPinDragStart(evt) {
+
+    evt.preventDefault();
+
+  }
 
 })();

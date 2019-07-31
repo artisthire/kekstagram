@@ -2,16 +2,18 @@
 
 (function () {
 
+  // реализует функционал модального окна с полноэкранным просмотром выбраной картики
+
   var picturesContainerElement = document.querySelector('.pictures');
   var modalContainer = document.querySelector('.big-picture');
-  var modalCloseBtn = modalContainer.querySelector('#picture-cancel');
-  var modalImgElement = modalContainer.querySelector('.big-picture__img > img');
-  var modalLikeCountElement = modalContainer.querySelector('.likes-count');
-  var modalCommentsCountElement = modalContainer.querySelector('.social__comment-count');
-  var modalMoreCommentsBtn = modalContainer.querySelector('.social__comments-loader ');
+  var closeBtn = modalContainer.querySelector('#picture-cancel');
+  var previewImgElement = modalContainer.querySelector('.big-picture__img > img');
+  var countLikesElement = modalContainer.querySelector('.likes-count');
+  var countCommentsElement = modalContainer.querySelector('.social__comment-count');
+  var moreCommentsBtn = modalContainer.querySelector('.social__comments-loader ');
   var commentsContainerElement = modalContainer.querySelector('.social__comments');
-  var modalDescriptionElement = modalContainer.querySelector('.social__caption');
-  var modalCommentElement = modalContainer.querySelector('.social__footer-text');
+  var imgTitleElement = modalContainer.querySelector('.social__caption');
+  var userCommentInput = modalContainer.querySelector('.social__footer-text');
 
   // обработчик отображения большой картинки при клике на одну из ссылок
   // обработчик делегирован на общий контейнер
@@ -27,7 +29,7 @@
   // используются для порционного отображения комментариев при клика на кнопку загрузки большего колличества комментариев
   var prevCountComments = 0;
   var currentCountCommens = 0;
-  var COMMENTS_STEP = 5;
+  var COMMENTS_SHOW_STEP = 5;
 
   /**
    * Обрабатывает открытие окна отображения большой картинки по клике на одну из ссылок
@@ -71,16 +73,16 @@
     // заполнение данными и отображение большой картинки
     updateModalData(dataPicture);
     modalContainer.classList.remove('hidden');
-    modalImgElement.focus();
+    previewImgElement.focus();
 
     // добавляем класс открытия модального окна к BODY
     document.body.classList.add('modal-open');
 
     // обработчик для кнопки загрузки большего количества коментариев
-    modalMoreCommentsBtn.addEventListener('click', onBtnMoreCommentsClick);
+    moreCommentsBtn.addEventListener('click', onBtnMoreCommentsClick);
 
     // добавление обработчиков закрытия окна
-    modalCloseBtn.addEventListener('click', onBtnCloseModalClick);
+    closeBtn.addEventListener('click', onBtnCloseModalClick);
     document.addEventListener('keydown', onModalEscPress);
 
   }
@@ -97,12 +99,12 @@
 
     modalContainer.classList.add('hidden');
     document.body.classList.remove('modal-open');
-    modalCommentElement.value = '';
+    userCommentInput.value = '';
 
-    modalMoreCommentsBtn.removeEventListener('click', onBtnMoreCommentsClick);
+    moreCommentsBtn.removeEventListener('click', onBtnMoreCommentsClick);
 
     // удаляем обработчики закрытия окна
-    modalCloseBtn.removeEventListener('click', onBtnCloseModalClick);
+    closeBtn.removeEventListener('click', onBtnCloseModalClick);
     document.removeEventListener('keydown', onModalEscPress);
 
   }
@@ -119,7 +121,7 @@
 
       // если в фокусе находятся внутренний элемент ввода комментария
       // окно не закрываем
-      if (~[modalCommentElement].indexOf(evt.target)) {
+      if (~[userCommentInput].indexOf(evt.target)) {
 
         return;
 
@@ -152,15 +154,16 @@
    */
   function updateModalData(data) {
 
-    modalImgElement.src = data.url;
-    modalLikeCountElement.textContent = data.likes;
-    modalDescriptionElement.textContent = data.description;
+    previewImgElement.src = data.url;
+    countLikesElement.textContent = data.likes;
+    imgTitleElement.textContent = data.description;
 
     currentCountCommens = 0;
-    modalMoreCommentsBtn.disabled = false;
-    modalMoreCommentsBtn.classList.remove('visually-hidden');
-    modalCommentsCountElement.classList.remove('visually-hidden');
+    moreCommentsBtn.disabled = false;
+    moreCommentsBtn.classList.remove('visually-hidden');
+    countCommentsElement.classList.remove('visually-hidden');
 
+    // убираем комментарии к предыдущей картине
     commentsContainerElement.textContent = '';
 
     updateSocialComments(data.comments);
@@ -176,20 +179,20 @@
 
     prevCountComments = currentCountCommens;
 
-    currentCountCommens += COMMENTS_STEP;
+    currentCountCommens += COMMENTS_SHOW_STEP;
 
     // если достигнут предел количества комментарие, отключаем отключаем обработку загрузки доп. комметариев
     if (currentCountCommens >= commensArray.length) {
 
       currentCountCommens = commensArray.length;
 
-      modalMoreCommentsBtn.disabled = true;
-      modalMoreCommentsBtn.removeEventListener('click', onBtnMoreCommentsClick);
+      moreCommentsBtn.disabled = true;
+      moreCommentsBtn.removeEventListener('click', onBtnMoreCommentsClick);
 
     }
 
-    // заполняем блок с информацией о количестве отображенных и доступных комментариев
-    modalCommentsCountElement.innerHTML = currentCountCommens + ' из ' +
+    // обновляем блок с информацией о количестве отображенных и доступных комментариев
+    countCommentsElement.innerHTML = currentCountCommens + ' из ' +
       '<span class="comments-count">' + commensArray.length + '</span>' + ' комментариев';
 
     // передаем часть массива комментариев, которые еще не отображены, для их добавления в блок комментариев
@@ -205,13 +208,12 @@
   function addSocialComments(commensArray) {
 
     // создаем и заполняем массив элементов LI для списка комментариев
-    var socialCommentElements = [];
+    var socialCommentElements = commensArray.reduce(function (container, current) {
 
-    commensArray.forEach(function (current) {
+      container.push(createSocialCommentElement(current));
+      return container;
 
-      socialCommentElements.push(createSocialCommentElement(current));
-
-    });
+    }, []);
 
     window.utilities.insertTemplatesNodes(socialCommentElements, commentsContainerElement);
 

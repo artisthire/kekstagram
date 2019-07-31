@@ -23,13 +23,12 @@
     var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
     // создаем и заполняем массив DOM-элементов для вставки в код на основе данных
-    var picturesElements = [];
+    var picturesElements = data.reduce(function (container, currentElement) {
 
-    data.forEach(function (current) {
+      container.push(createPictureElement(currentElement));
+      return container;
 
-      picturesElements.push(createPictureElement(current));
-
-    });
+    }, []);
 
     // вставляем в контейнер набор элементов, содержащийх HTML разметку картинок на основе шаблона и данных
     window.utilities.insertTemplatesNodes(picturesElements, picturesContainerElement);

@@ -6,6 +6,7 @@
 
   var Scale = {
 
+    start: 100,
     step: 25,
     minValue: 25,
     maxValue: 100
@@ -16,6 +17,9 @@
   var btnScaleSmaller = btnsContainer.querySelector('.scale__control--smaller');
   var btnScaleBigger = btnsContainer.querySelector('.scale__control--bigger');
   var scaleValueOutput = btnsContainer.querySelector('.scale__control--value');
+
+  // хранит величину текущего увеличения изображения
+  var currentScale = null;
 
   // хранит ссылку на тег изображения, к котором применяются изменения
   var targetImg = null;
@@ -37,6 +41,7 @@
   function initImgScaler(targetImgPreview) {
 
     targetImg = targetImgPreview;
+    currentScale = Scale.start;
 
     btnsContainer.addEventListener('click', onBtnScaleImgClick);
 
@@ -51,7 +56,7 @@
     btnsContainer.removeEventListener('click', onBtnScaleImgClick);
 
     targetImg.style.transform = '';
-    scaleValueOutput.value = '100%';
+    scaleValueOutput.value = Scale.start + '%';
     btnScaleBigger.disabled = true;
 
   }
@@ -76,21 +81,19 @@
 
     // задаем знак числа шага уменьшения/увеличения изображения
     var step = (evt.target.closest('.scale__control--smaller') === btnScaleSmaller) ? -Scale.step : Scale.step;
-    // считываем текущее значение на кнопке уменьшения/увеличения изображения
-    var currentValue = parseInt(scaleValueOutput.value, 10);
 
     // увеличиваем значение на шаг и ограничиваем его согласно максимального и минимального значения
     // а также отключаем возможность взаимодействия с кнопками если выходим за пределы ограничений
-    currentValue += step;
+    currentScale += step;
 
-    if (currentValue >= Scale.maxValue) {
+    if (currentScale >= Scale.maxValue) {
 
-      currentValue = Scale.maxValue;
+      currentScale = Scale.maxValue;
       btnScaleBigger.disabled = true;
 
-    } else if (currentValue <= Scale.minValue) {
+    } else if (currentScale <= Scale.minValue) {
 
-      currentValue = Scale.minValue;
+      currentScale = Scale.minValue;
       btnScaleSmaller.disabled = true;
 
     } else {
@@ -101,9 +104,9 @@
     }
 
     // записываем новое значение в поле отображения величины увеличения
-    scaleValueOutput.value = currentValue + '%';
+    scaleValueOutput.value = currentScale + '%';
     // изменяем маштаб изображения
-    targetImg.style.transform = 'scale(' + currentValue / 100 + ')';
+    targetImg.style.transform = 'scale(' + currentScale / 100 + ')';
 
   }
 

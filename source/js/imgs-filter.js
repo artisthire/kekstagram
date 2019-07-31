@@ -8,9 +8,9 @@
 
   var btnIdTOFunction = {
 
-    'popular': filterPopularImg,
-    'new': filterNewImg,
-    'discussed': filterDiscussedImg
+    popular: filterPopularImg,
+    new: filterNewImg,
+    discussed: filterDiscussedImg
 
   };
 
@@ -69,12 +69,12 @@
     // удаляем все картинки
     window.pictures.deleteMitiPictures();
 
-    // по ID кнопки запускаем соответствующую функцию обработки
-    var template = targetButton.id.split('-')[1];
+    // по ID кнопки получаем имя соответствующей функции фильтрации картинок
+    var functionName = targetButton.id.split('-')[1];
 
-    var dataImg = btnIdTOFunction[template]();
+    var picturesData = btnIdTOFunction[functionName]();
 
-    window.pictures.insertMiniPictures(dataImg);
+    window.pictures.insertMiniPictures(picturesData);
 
   }
 
@@ -100,7 +100,7 @@
 
     var COUNT_IMG = 10;
 
-    var outputData = [];
+    var picturesData = [];
 
     // генерируем массив уникальных случайных чисел
     var uniqueRandomArray = window.utilities.getUniqueArrayNumbers(COUNT_IMG, 0, window.data.uploadData.length);
@@ -108,11 +108,11 @@
     // на основе массива заполняем временный массив данными для отрисовки фотографий
     uniqueRandomArray.forEach(function (current) {
 
-      outputData.push(window.data.uploadData[current]);
+      picturesData.push(window.data.uploadData[current]);
 
     });
 
-    return outputData;
+    return picturesData;
 
   }
 
@@ -124,10 +124,11 @@
    */
   function filterDiscussedImg() {
 
-    var outputData = window.data.uploadData.slice();
+    var picturesData = window.data.uploadData.slice();
 
-    outputData.sort(function (left, right) {
+    picturesData.sort(function (left, right) {
 
+      // сортировка по уменьшению количества комментариев
       if (right.comments.length > left.comments.length) {
 
         return 1;
@@ -138,6 +139,7 @@
 
       } else {
 
+        // сортировка по уменьшению количеств лайков
         if (right.likes > left.likes) {
 
           return 1;
@@ -148,13 +150,13 @@
 
         }
 
-          return 0;
+        return 0;
 
       }
 
     });
 
-    return outputData;
+    return picturesData;
 
   }
 
