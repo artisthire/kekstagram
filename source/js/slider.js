@@ -6,7 +6,7 @@
   // предполагает, что координаты указателя задаются позиционированием внутри контейнера с помощью свойства стилей left
 
   // контейнер, внутри которого перемещается указатель
-  var sliderContainer = document.querySelector('.effect-level__line');
+  var sliderContainer = document.querySelector(`.effect-level__line`);
   // указатель слайдера
   var sliderPin = sliderContainer.querySelector('.effect-level__pin');
   // заполнитель слайдера между его левым краем и положением указателя
