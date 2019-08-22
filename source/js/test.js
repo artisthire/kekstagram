@@ -1,5 +1,6 @@
 import {PinSlider} from './pin-slider.js';
 import {BtnsRangeSwitch} from './btns-range-switch.js';
+import {Popup} from './popup.js';
 
 // контейнер, внутри которого перемещается указатель
 let sliderContainer = document.querySelector(`.effect-level__line`);
@@ -33,6 +34,7 @@ let sliderDepth = sliderContainer.querySelector('.effect-level__depth');
 
   let pinSlider = null;
   let scaler = null;
+  let popup = null;
 
   btnUploadFile.addEventListener('change', onBtnUploadFileChange);
 
@@ -42,11 +44,13 @@ let sliderDepth = sliderContainer.querySelector('.effect-level__depth');
    */
   function onBtnUploadFileChange() {
 
-    modalContainer.classList.remove('hidden');
-    modalContainer.focus();
+    popup = new Popup(modalContainer, [hashtagInput, descriptionInput], modalCloseBtn, 'hidden', 'modal-open');
+    popup.addClosePopupListener(onPopupClose);
+    popup.showPopup(onPopupShow);
 
-    modalCloseBtn.addEventListener('click', onBtnCloseModalClick);
+  }
 
+  function onPopupShow() {
     pinSlider = new PinSlider(sliderContainer, sliderPin, sliderDepth);
     scaler = new BtnsRangeSwitch(
       {container: btnsContainer},
@@ -54,6 +58,27 @@ let sliderDepth = sliderContainer.querySelector('.effect-level__depth');
 
     scaler.addChangeListener(eventDetail);
     pinSlider.addChangeListener(eventDetail);
+  }
+
+  function onPopupClose() {
+
+    pinSlider.removeChangeListener(eventDetail);
+    pinSlider.destructor();
+    scaler.removeChangeListener(eventDetail)
+    scaler.destructor();
+
+    pinSlider = null;
+    scaler = null;
+
+    popup.removeClosePopupListener(onPopupClose);
+
+    // сбрасываем значение input[type='file'] для повторной сработки события 'change' если изображение будет тем же самым
+    btnUploadFile.value = '';
+
+    // сбрасываем содержимое полей хэштегов и описания изображения
+    hashtagInput.value = '';
+    descriptionInput.value = '';
+
   }
 
   /**
@@ -124,6 +149,7 @@ let sliderDepth = sliderContainer.querySelector('.effect-level__depth');
 
 
   // -------------------------------------------------------
+  // временная функция для тестирования событий на создаваемых виджетах
 
   function eventDetail(evt) {
 
