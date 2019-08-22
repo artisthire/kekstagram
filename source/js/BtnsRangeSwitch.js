@@ -9,6 +9,8 @@
 */
 export class BtnsRangeSwitch {
 
+  _eventType = 'change-value';
+
   constructor(htmlElements, range) {
     this.container = htmlElements.container;
     this.btnMinus = htmlElements.btnMinus || this.container.querySelectorAll('button')[0];
@@ -50,7 +52,7 @@ export class BtnsRangeSwitch {
     this.outputField.value = `${this._currentValue}${this.outputValueUnit}`;
 
     // создаем и вызываем событие изменения величины переключаетелем
-    const changeValueEvent = new CustomEvent('change-value', {bubbles: true, detail: {value: this._currentValue}});
+    const changeValueEvent = new CustomEvent(this._eventType, {bubbles: true, detail: {value: this._currentValue}});
     this.container.dispatchEvent(changeValueEvent);
   }
 
@@ -70,6 +72,24 @@ export class BtnsRangeSwitch {
     } else if (value <= this.minValue) {
       this.btnMinus.disabled = true;
     }
+  }
+
+  addChangeListener(type, callbackFunc){
+
+    if (type !== this._eventType) {
+      return;
+    }
+
+    this.container.addEventListener(type, callbackFunc);
+  }
+
+  removeChangeListener(type, callbackFunc) {
+
+     if (type !== this._eventType) {
+      return;
+    }
+
+    this.container.removeEventListener(type, callbackFunc);
   }
 
   destructor() {

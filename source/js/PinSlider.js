@@ -9,6 +9,7 @@ export class PinSlider {
   _coordShift = 0;
   _containerWidth = 0;
   _containerCoordLeft = 0;
+  _eventType = 'change-coord';
 
   /**
    * Создает объект слайдера
@@ -39,6 +40,11 @@ export class PinSlider {
    * @param {object} evt - объект события
    */
   _onPinMousedown(evt) {
+
+    if (evt.which !== 1) {
+      return;
+    }
+
     // получаем начальные данные о характеристиках и положении указателя и контейнера слайдера
     const {pinStartCoordLeft, pinRadius, containerWidth, containerCoordLeft} = this._getStartPreferences();
 
@@ -162,8 +168,26 @@ export class PinSlider {
   }
 
   _dispatchCustomEvent(pinCoordLeft, containerWidth) {
-    const changeCoordEvent = new CustomEvent('change-coord', {bubbles: true, detail: {coord: pinCoordLeft, containerWidth: containerWidth}});
+    const changeCoordEvent = new CustomEvent(this._eventType, {bubbles: true, detail: {coord: pinCoordLeft, containerWidth: containerWidth}});
     this.container.dispatchEvent(changeCoordEvent);
+  }
+
+  addChangeListener(type, callbackFunc){
+
+    if (type !== this._eventType) {
+      return;
+    }
+
+    this.container.addEventListener(type, callbackFunc);
+  }
+
+  removeChangeListener(type, callbackFunc) {
+
+     if (type !== this._eventType) {
+      return;
+    }
+
+    this.container.removeEventListener(type, callbackFunc);
   }
 
   /**

@@ -52,8 +52,8 @@ let sliderDepth = sliderContainer.querySelector('.effect-level__depth');
       {container: btnsContainer},
       {startValue: 100, valueStep: 25, minValue: 25, maxValue: 100});
 
-    btnsContainer.addEventListener('change-value', eventDetail)
-    sliderContainer.addEventListener('change-coord', eventDetail);
+    scaler.addChangeListener('change-value', eventDetail)
+    pinSlider.addChangeListener('change-coord', eventDetail);
   }
 
   /**
@@ -68,9 +68,9 @@ let sliderDepth = sliderContainer.querySelector('.effect-level__depth');
 
     modalContainer.classList.add('hidden');
 
-    sliderContainer.removeEventListener('change-coord', eventDetail);
+    pinSlider.removeChangeListener('change-coord', eventDetail);
     pinSlider.destructor();
-    btnsContainer.removeEventListener('change-value', eventDetail)
+    scaler.removeChangeListener('change-value', eventDetail)
     scaler.destructor();
 
     pinSlider = null;
