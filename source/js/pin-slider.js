@@ -167,27 +167,31 @@ export class PinSlider {
     }
   }
 
+  /**
+   * Посылает кастомное событие при измененнии координат указателя слайдера
+   * @param {number} pinCoordLeft - координата указателя
+   * @param {number} containerWidth - ширина контейнера слайдера
+   */
   _dispatchCustomEvent(pinCoordLeft, containerWidth) {
-    const changeCoordEvent = new CustomEvent(this._eventType, {bubbles: true, detail: {coord: pinCoordLeft, containerWidth: containerWidth}});
+    const changeCoordEvent = new CustomEvent(this._eventType, {bubbles: true, detail: {coord: pinCoordLeft, containerWidth}});
     this.container.dispatchEvent(changeCoordEvent);
   }
 
-  addChangeListener(type, callbackFunc){
-
-    if (type !== this._eventType) {
-      return;
-    }
-
-    this.container.addEventListener(type, callbackFunc);
+  /**
+   * Метод позволяет ПОДписаться на событие изменения координат указателя слайдера из внешнего кода
+   * и вызывать каллбэк-функцию при каждом изменении координаты указателя
+   * @param {object} callbackFunc - каллбэк-функция, которая будет вызываться при изменении координат указателя
+   */
+  addChangeListener(callbackFunc) {
+    this.container.addEventListener(this._eventType, callbackFunc);
   }
 
-  removeChangeListener(type, callbackFunc) {
-
-     if (type !== this._eventType) {
-      return;
-    }
-
-    this.container.removeEventListener(type, callbackFunc);
+  /**
+   * Метод позволяет ОТписаться от события изменения координат указателя слайдера из внешнего кода
+   * @param {object} callbackFunc - каллбэк-функция, которая была передана при подписывании на событие
+   */
+  removeChangeListener(callbackFunc) {
+    this.container.removeEventListener(this._eventType, callbackFunc);
   }
 
   /**

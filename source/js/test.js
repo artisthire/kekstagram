@@ -1,5 +1,5 @@
-import {PinSlider} from './PinSlider.js';
-import {BtnsRangeSwitch} from './BtnsRangeSwitch.js';
+import {PinSlider} from './pin-slider.js';
+import {BtnsRangeSwitch} from './btns-range-switch.js';
 
 // контейнер, внутри которого перемещается указатель
 let sliderContainer = document.querySelector(`.effect-level__line`);
@@ -52,8 +52,8 @@ let sliderDepth = sliderContainer.querySelector('.effect-level__depth');
       {container: btnsContainer},
       {startValue: 100, valueStep: 25, minValue: 25, maxValue: 100});
 
-    scaler.addChangeListener('change-value', eventDetail)
-    pinSlider.addChangeListener('change-coord', eventDetail);
+    scaler.addChangeListener(eventDetail);
+    pinSlider.addChangeListener(eventDetail);
   }
 
   /**
@@ -68,9 +68,9 @@ let sliderDepth = sliderContainer.querySelector('.effect-level__depth');
 
     modalContainer.classList.add('hidden');
 
-    pinSlider.removeChangeListener('change-coord', eventDetail);
+    pinSlider.removeChangeListener(eventDetail);
     pinSlider.destructor();
-    scaler.removeChangeListener('change-value', eventDetail)
+    scaler.removeChangeListener(eventDetail)
     scaler.destructor();
 
     pinSlider = null;
