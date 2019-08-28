@@ -18,7 +18,8 @@ let sliderDepth = sliderContainer.querySelector('.effect-level__depth');
   // и от change-effects.js - Обработка изменения эффекта наложенного на изображение
 
   var btnUploadFile = document.querySelector('#upload-file');
-  var modalContainer = document.querySelector('.img-upload__overlay');
+  var modalOverlay = document.querySelector('.img-upload__overlay');
+  var modalContainer = modalOverlay.querySelector('.img-upload__wrapper');
   var modalCloseBtn = modalContainer.querySelector('#upload-cancel');
 
   var form = document.querySelector('#upload-select-image');
@@ -44,7 +45,7 @@ let sliderDepth = sliderContainer.querySelector('.effect-level__depth');
    */
   function onBtnUploadFileChange() {
 
-    popup = new Popup(modalContainer, [hashtagInput, descriptionInput], modalCloseBtn, 'hidden', 'modal-open');
+    popup = new Popup(modalOverlay, modalContainer, [hashtagInput, descriptionInput], modalCloseBtn, 'hidden', 'modal-open');
     popup.addClosePopupListener(onPopupClose);
     popup.showPopup(onPopupShow);
 
@@ -71,6 +72,7 @@ let sliderDepth = sliderContainer.querySelector('.effect-level__depth');
     scaler = null;
 
     popup.removeClosePopupListener(onPopupClose);
+    popup = null;
 
     // сбрасываем значение input[type='file'] для повторной сработки события 'change' если изображение будет тем же самым
     btnUploadFile.value = '';
