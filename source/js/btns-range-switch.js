@@ -1,6 +1,6 @@
 /**
  * Модуль HTML-элемента - кнопочного переключается величины в заданном диапазоне
- * @module ./BtnRangeSwitch
+ * @module ./btns-range-switch
  */
 
 /**
