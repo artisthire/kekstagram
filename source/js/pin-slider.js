@@ -9,7 +9,7 @@ export class PinSlider {
   _coordShift = 0;
   _containerWidth = 0;
   _containerCoordLeft = 0;
-  _eventType = 'change-coord';
+  _EVENT_TYPE = 'change-coord';
 
   /**
    * Создает объект слайдера
@@ -18,11 +18,10 @@ export class PinSlider {
    * @param {object} depth - HTML-элемент - деконативный заполнитель между началом слайдера и позицией указателя
    * @param {function} callbackFunc - функция обратного вызова, которая вызвается при перемещении указателя слайдера
    */
-  constructor(container, pin, depth, callbackFunc) {
+  constructor(container, pin, depth) {
     this.container = container;
     this.pin = pin;
     this.depth = depth;
-    this.callbackFunc = callbackFunc;
 
     this._onPinMousedown = this._onPinMousedown.bind(this);
     this._onPinKeydown = this._onPinKeydown.bind(this);
@@ -33,6 +32,33 @@ export class PinSlider {
 
     // отменяет встроенную в браузер обработку события перемещения элемента
     this.pin.addEventListener('dragstart', this._onPinDragStart);
+  }
+
+  /**
+   * Метод позволяет ПОДписаться на событие изменения координат указателя слайдера из внешнего кода
+   * и вызывать каллбэк-функцию при каждом изменении координаты указателя
+   * @param {object} callbackFunc - каллбэк-функция, которая будет вызываться при изменении координат указателя
+   */
+  addChangeListener(callbackFunc) {
+    this.container.addEventListener(this._EVENT_TYPE, callbackFunc);
+  }
+
+  /**
+   * Метод позволяет ОТписаться от события изменения координат указателя слайдера из внешнего кода
+   * @param {object} callbackFunc - каллбэк-функция, которая была передана при подписывании на событие
+   */
+  removeChangeListener(callbackFunc) {
+    this.container.removeEventListener(this._EVENT_TYPE, callbackFunc);
+  }
+
+  /**
+   * Метод удаляет обработчки событий изменения положения указателя
+   * Должен вызваться внешним кодом, когда слайдер больше не нужен
+   */
+  destructor() {
+    this.pin.removeEventListener('mousedown', this._onPinMousedown);
+    this.pin.removeEventListener('dragstart', this._onPinDragStart);
+    this.pin.removeEventListener('keydown', this._onPinKeydown);
   }
 
   /**
@@ -173,34 +199,7 @@ export class PinSlider {
    * @param {number} containerWidth - ширина контейнера слайдера
    */
   _dispatchCustomEvent(pinCoordLeft, containerWidth) {
-    const changeCoordEvent = new CustomEvent(this._eventType, {bubbles: true, detail: {coord: pinCoordLeft, containerWidth}});
+    const changeCoordEvent = new CustomEvent(this._EVENT_TYPE, {bubbles: true, detail: {coord: pinCoordLeft, containerWidth}});
     this.container.dispatchEvent(changeCoordEvent);
-  }
-
-  /**
-   * Метод позволяет ПОДписаться на событие изменения координат указателя слайдера из внешнего кода
-   * и вызывать каллбэк-функцию при каждом изменении координаты указателя
-   * @param {object} callbackFunc - каллбэк-функция, которая будет вызываться при изменении координат указателя
-   */
-  addChangeListener(callbackFunc) {
-    this.container.addEventListener(this._eventType, callbackFunc);
-  }
-
-  /**
-   * Метод позволяет ОТписаться от события изменения координат указателя слайдера из внешнего кода
-   * @param {object} callbackFunc - каллбэк-функция, которая была передана при подписывании на событие
-   */
-  removeChangeListener(callbackFunc) {
-    this.container.removeEventListener(this._eventType, callbackFunc);
-  }
-
-  /**
-   * Метод удаляет обработчки событий изменения положения указателя
-   * Должен вызваться внешним кодом, когда слайдер больше не нужен
-   */
-  destructor() {
-    this.pin.removeEventListener('mousedown', this._onPinMousedown);
-    this.pin.removeEventListener('dragstart', this._onPinDragStart);
-    this.pin.removeEventListener('keydown', this._onPinKeydown);
   }
 }

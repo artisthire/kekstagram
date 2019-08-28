@@ -9,7 +9,7 @@
 */
 export class BtnsRangeSwitch {
 
-  _eventType = 'change-value';
+  _EVENT_TYPE = 'change-value';
 
   /**
    * Создает объект переключателя с двумя кнопками и полем отображения изменяющейся величины
@@ -35,15 +35,36 @@ export class BtnsRangeSwitch {
     this.minValue = range.minValue || 0;
     this.maxValue = range.maxValue || 100;
 
-    // ограничиваем стартовое значение пределами диапазона возмжоного изменения
     this._currentValue = this._restrictValue(this.startValue);
-    // устанавливаем начальное состояние кнопок переключения, если стартовое значение достигло граници изменения
-    this._setBtnsActive(this._currentValue);
-
-    this.outputField.value = `${this._currentValue}${this.outputValueUnit}`;
+    this._setElementsStatus(this._currentValue);
 
     this._onBtnsClick = this._onBtnsClick.bind(this);
     this.container.addEventListener('click', this._onBtnsClick);
+  }
+
+  /**
+   * Метод позволяет ПОДписаться на событие изменения величины в переключателе
+   * и вызывать каллбэк-функцию при каждом изменении
+   * @param {object} callbackFunc - каллбэк-функция, которая будет вызываться при изменении величины в переключателе
+   */
+  addChangeListener(callbackFunc) {
+    this.container.addEventListener(this._EVENT_TYPE, callbackFunc);
+  }
+
+  /**
+   * Метод позволяет ОТписаться от события изменения величины в переключателе
+   * @param {object} callbackFunc - каллбэк-функция, которую внешний код передал при подписывании на событие
+   */
+  removeChangeListener(callbackFunc) {
+    this.container.removeEventListener(this._EVENT_TYPE, callbackFunc);
+  }
+
+  /**
+   * Метод удаляет обработчк события нажатия на кнопки изменения величины
+   * Должен вызваться внешним кодом, когда переключатель больше не нужен
+   */
+  destructor() {
+    this.container.removeEventListener('click', this._onBtnsClick);
   }
 
   /**
@@ -63,17 +84,24 @@ export class BtnsRangeSwitch {
 
     this._currentValue += valueStep;
 
+    this._currentValue = this._restrictValue(this._currentValue);
+    this._setElementsStatus(this._currentValue);
+
+    // вызываем событие изменения величины переключаетелем
+    this._dispatchCustomEvent(this._currentValue);
+  }
+
+  /**
+   * Включает/отключает кнопки управления и отображает текущее значение переключаемой величины
+   * @param {number} value - текущее значение величины
+   */
+  _setElementsStatus(value) {
     // ограничиваем значение величины установленными пределами
     // и соответственно отключаем кнопку увеличения либо уменьшения, если выходим за пределы
-    this._currentValue = this._restrictValue(this._currentValue);
-    this._setBtnsActive(this._currentValue);
+    this._setBtnsActive(value);
 
     // записываем новое значение в поле отображения величины
-    this.outputField.value = `${this._currentValue}${this.outputValueUnit}`;
-
-    // создаем и вызываем событие изменения величины переключаетелем
-    const changeValueEvent = new CustomEvent(this._eventType, {bubbles: true, detail: {value: this._currentValue}});
-    this.container.dispatchEvent(changeValueEvent);
+    this.outputField.value = `${value}${this.outputValueUnit}`;
   }
 
   /**
@@ -104,27 +132,11 @@ export class BtnsRangeSwitch {
   }
 
   /**
-   * Метод позволяет ПОДписаться на событие изменения величины в переключателе
-   * и вызывать каллбэк-функцию при каждом изменении
-   * @param {object} callbackFunc - каллбэк-функция, которая будет вызываться при изменении величины в переключателе
+   * Посылает кастомное событие при измененнии величины переключателем
+   * @param {number} currentValue - текущее значение величины, которая меняется переключателем
    */
-  addChangeListener(callbackFunc) {
-    this.container.addEventListener(this._eventType, callbackFunc);
-  }
-
-  /**
-   * Метод позволяет ОТписаться от события изменения величины в переключателе
-   * @param {object} callbackFunc - каллбэк-функция, которую внешний код передал при подписывании на событие
-   */
-  removeChangeListener(callbackFunc) {
-    this.container.removeEventListener(this._eventType, callbackFunc);
-  }
-
-  /**
-   * Метод удаляет обработчк события нажатия на кнопки изменения величины
-   * Должен вызваться внешним кодом, когда переключатель больше не нужен
-   */
-  destructor() {
-    this.container.removeEventListener('click', this._onBtnsClick);
+  _dispatchCustomEvent(currentValue) {
+    const changeValueEvent = new CustomEvent(this._EVENT_TYPE, {bubbles: true, detail: {value: currentValue}});
+    this.container.dispatchEvent(changeValueEvent);
   }
 }

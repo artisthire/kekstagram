@@ -1,6 +1,13 @@
-import {PinSlider} from './pin-slider.js';
-import {BtnsRangeSwitch} from './btns-range-switch.js';
-import {Popup} from './popup.js';
+import {FormUploadImg} from './form-upload-img.js';
+
+let btnUploadFile = document.querySelector('#upload-file');
+let formUploadImg = new FormUploadImg(btnUploadFile);
+
+
+/*
+/*
+
+
 
 // контейнер, внутри которого перемещается указатель
 let sliderContainer = document.querySelector(`.effect-level__line`);
@@ -43,6 +50,7 @@ let sliderDepth = sliderContainer.querySelector('.effect-level__depth');
    * Обрабатывает переключение типа наложенного на изображение эффекта
    *
    */
+   /*
   function onBtnUploadFileChange() {
 
     popup = new Popup(modalOverlay, modalContainer, [hashtagInput, descriptionInput], modalCloseBtn, 'hidden', 'modal-open');
@@ -89,6 +97,7 @@ let sliderDepth = sliderContainer.querySelector('.effect-level__depth');
    * @param {Object} evt - объект события
    *
    */
+   /*
   function onBtnCloseModalClick(evt) {
 
     evt.preventDefault();
@@ -111,6 +120,7 @@ let sliderDepth = sliderContainer.querySelector('.effect-level__depth');
    * @param {Object} evt - объект события
    *
    */
+   /*
   function onModalEscPress(evt) {
 
     if (window.utilities.isEscKeyPress(evt)) {
@@ -135,6 +145,7 @@ let sliderDepth = sliderContainer.querySelector('.effect-level__depth');
    * @param {Object} evt - объект события
    *
    */
+  /*
   function onFormSubmit(evt) {
 
     evt.preventDefault();
@@ -166,4 +177,5 @@ let sliderDepth = sliderContainer.querySelector('.effect-level__depth');
     console.log(message);
 
   }
+  */
 
