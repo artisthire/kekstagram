@@ -40,27 +40,22 @@ export class ChangeImgEffect {
     this.imgElement = imgElement;
 
     // контейнер с радиокнопками для переключения эффектов
-    this.container = document.querySelector('.effects__list');
-    this.btnDefaultEffect = this.container.querySelector('#effect-none');
+    this.typeEffectContainer = document.querySelector('.effects__list');
+    const btnDefaultTypeEffect = this.typeEffectContainer.querySelector('#effect-none');
     // устанавливаем выбранной кнопку эффекта по умолчанию
-    this.btnDefaultEffect.checked = true;
+    btnDefaultTypeEffect.checked = true;
 
     // контейнер для поля установки величены выбранного эффекта
     // также внутри этого контейнера находится слайдер для изменения уровня наложенного эффекта
-    this.effectFieldContainer = document.querySelector('.img-upload__effect-level');
-    this.outputFieldEffectLevel = this.effectFieldContainer.querySelector('.effect-level__value');
+    this.levelEffectContainer = document.querySelector('.img-upload__effect-level');
+    this.outputFieldEffectLevel = this.levelEffectContainer.querySelector('.effect-level__value');
     // изначально слайдер изменения уровня эффекта скрыт
-    this.effectFieldContainer.style.display = 'none';
-    // устанавливаем начальное значение уровня наложенного эффекта
-    this.outputFieldEffectLevel.value = 100;
+    this.levelEffectContainer.style.display = 'none';
 
     // элементы слайдера изменения уровня выбранного эффекта
-    this._sliderContainer = this.effectFieldContainer.querySelector('.effect-level__line');
+    this._sliderContainer = this.levelEffectContainer.querySelector('.effect-level__line');
     this._sliderPin = this._sliderContainer.querySelector('.effect-level__pin');
     this._sliderDepth = this._sliderContainer.querySelector('.effect-level__depth');
-    // устанавливаем начальное положение элементов управления слайдера
-    this._sliderPin.style.left = '100%';
-    this._sliderDepth.style.width = '100%';
 
     // контейнер переключателя масштабирования изображения
     this._rangeSwitchContainer = document.querySelector('.scale');
@@ -69,13 +64,13 @@ export class ChangeImgEffect {
         {container: this._rangeSwitchContainer},
         {startValue: 100, valueStep: 25, minValue: 25, maxValue: 100});
 
-    // добавляем обработчик масштабирования изображения при изменении величины переключателем
+    // добавляем обработку масштабирования изображения при изменении величины переключателем
     this._scaleImg = this._scaleImg.bind(this);
     this._scaler.addChangeListener(this._scaleImg);
 
     // добавляем обработчик переключения типа наложенного эффекта
     this._onBtnsImageEffectChange = this._onBtnsImageEffectChange.bind(this);
-    this.container.addEventListener('change', this._onBtnsImageEffectChange);
+    this.typeEffectContainer.addEventListener('change', this._onBtnsImageEffectChange);
   }
 
   /**
@@ -83,7 +78,7 @@ export class ChangeImgEffect {
    * Сбрасывает наложенные эффекты, удаляет обработчки изменения типа, степени эффекта и масштаба изображения
    */
   destructor() {
-    this.container.removeEventListener('change', this._onBtnsImageEffectChange);
+    this.typeEffectContainer.removeEventListener('change', this._onBtnsImageEffectChange);
 
     this._resetImgEffect();
     // сбрасываем масштабирование картинки
@@ -114,10 +109,10 @@ export class ChangeImgEffect {
     // если выбрана кнопка, когда эффекта нет
     // убираем слайдер выбора уровня наложенного эффекта
     if (this._selectedEffectBtn.value === this._DEFAULT_EFFECT) {
-      this.effectFieldContainer.style.display = 'none';
+      this.levelEffectContainer.style.display = 'none';
     } else {
       // показываем слайдер управления уровнем эффекта
-      this.effectFieldContainer.style.display = '';
+      this.levelEffectContainer.style.display = '';
       // добавялем класс к карнитке согласно выбранного эффекта
       this.imgElement.classList.add(this._EFFECT_PATTERN + this._selectedEffectBtn.value);
 
@@ -125,6 +120,7 @@ export class ChangeImgEffect {
       if (!this._pinSlider) {
         this._pinSlider = new PinSlider(this._sliderContainer, this._sliderPin, this._sliderDepth);
 
+        // добавляем обработку изменения уровня эффекта
         this._setEffectLevel = this._setEffectLevel.bind(this);
         this._pinSlider.addChangeListener(this._setEffectLevel);
       }
@@ -134,12 +130,12 @@ export class ChangeImgEffect {
   /**
    * Каллбэк-функция которая передается в слайдер уровня эффекта
    * При срабатывании события изменения положения указателя слайдера изменяет уровенть эффекта
-   * @param {object} evt - объект события изменения положения указателя слайдера
+   * @param {object} pinSliderEvent - объект события изменения положения указателя слайдера
    */
-  _setEffectLevel(evt) {
+  _setEffectLevel(pinSliderEvent) {
     // получаем данные о координатах указателя и общей ширине контейнера слайдера
-    let pinCoordX = evt.detail.coord;
-    let containerWidth = evt.detail.containerWidth;
+    let pinCoordX = pinSliderEvent.detail.coord;
+    let containerWidth = pinSliderEvent.detail.containerWidth;
 
     // в зависимости от текущего выбранного эффекта
     // получаем параметры для установки стилей через filter в CSS
@@ -165,11 +161,11 @@ export class ChangeImgEffect {
 
   /**
    * Каллбэк-функция которая передается в переключатель для изменения масштаба изображения
-   * @param {object} evt - объект события изменения значения переключаетелем
+   * @param {object} scalerEvent - объект события изменения значения переключаетелем
    */
-  _scaleImg(evt) {
+  _scaleImg(scalerEvent) {
     // получаем текущую величину из переключателя
-    let scaleValue = evt.detail.value / 100;
+    let scaleValue = scalerEvent.detail.value / 100;
     // устанавливаем стили для масштабирования изображения
     this.imgElement.style.transform = `scale(${scaleValue})`;
   }
@@ -178,6 +174,12 @@ export class ChangeImgEffect {
    * Сбрасывает наложенные на изображения стили в filter
    */
   _resetImgEffect() {
+    // устанавливаем начальное значение уровня наложенного эффекта
+    this.outputFieldEffectLevel.value = 100;
+    // устанавливаем начальное положение элементов управления слайдера
+    this._sliderPin.style.left = '100%';
+    this._sliderDepth.style.width = '100%';
+
     this.imgElement.className = '';
     this.imgElement.style.WebkitFilter = '';
     this.imgElement.style.filter = '';
