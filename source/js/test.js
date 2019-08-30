@@ -1,18 +1,10 @@
 import {FormUploadImg} from './form-upload-img.js';
-import {ServerRequest} from './server-interaction.js';
+import {loadDataPictures} from './server-interaction.js';
 
 let btnUploadFile = document.querySelector('#upload-file');
 let formUploadImg = new FormUploadImg(btnUploadFile);
 
-let request = new ServerRequest(
-  'https://js.dump.academy/kekstagram/data',
-  'GET',
-  console.log,
-  console.log
-);
-
-request.sendRequest();
-
+loadDataPictures(console.log, console.log);
 
 /*
 /*
