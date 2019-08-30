@@ -1,16 +1,23 @@
 import {FormUploadImg} from './form-upload-img.js';
 import {loadDataPictures} from './server-interaction.js';
+import {UsersPictures} from './users-pictures.js';
+
+let picturesData;
+
+let usersPictures = new UsersPictures();
+
+loadDataPictures((data) => {
+  picturesData=data;
+  usersPictures.addUsersPictures(data);
+  console.log(picturesData);
+}, console.log);
 
 let btnUploadFile = document.querySelector('#upload-file');
 let formUploadImg = new FormUploadImg(btnUploadFile);
 
-loadDataPictures(console.log, console.log);
 
 /*
 /*
-
-
-
 // контейнер, внутри которого перемещается указатель
 let sliderContainer = document.querySelector(`.effect-level__line`);
 // указатель слайдера

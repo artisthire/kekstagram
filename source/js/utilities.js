@@ -8,7 +8,6 @@
 
     insertTemplatesNodes: insertTemplatesNodes,
     isEscKeyPress: isEscKeyPress,
-    getCoords: getCoords,
     showErrorMessage: showErrorMessage,
     getUniqueArrayNumbers: getUniqueArrayNumbers
 
@@ -33,7 +32,7 @@
 
     }, fragment);
 
-    root.appendChild(fragment);
+    root.append(fragment);
 
   }
 
@@ -49,29 +48,6 @@
     var ESC_KEY_CODE = 27;
 
     return evt.keyCode === ESC_KEY_CODE;
-
-  }
-
-  /**
-   * Возвращает координаты переданного HTML элемента, приведенные в значение относительно документа, а не окна
-   *
-   * @param {object} elem - HTML-элемент, координаты которого нужно определить
-   *
-   * @return {object} - объект с координатами элемента относительно всего документа
-   *
-   */
-  function getCoords(elem) {
-
-    // получаем координаты элемента, но относительно окна, без учета прокрутки страницы
-    var box = elem.getBoundingClientRect();
-
-    // добавляем прокрутку страницы и возвращаем координаты относительно всего документа
-    return {
-
-      top: box.top + pageYOffset,
-      left: box.left + pageXOffset
-
-    };
 
   }
 
