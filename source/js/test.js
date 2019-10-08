@@ -7,10 +7,11 @@ let picturesData;
 let usersPictures = new UsersPictures();
 
 loadDataPictures((data) => {
-  picturesData=data;
+  picturesData = data;
   usersPictures.addUsersPictures(data);
   console.log(picturesData);
-}, console.log);
+},
+console.log);
 
 let btnUploadFile = document.querySelector('#upload-file');
 let formUploadImg = new FormUploadImg(btnUploadFile);

@@ -1,3 +1,4 @@
+import {eventMixin} from './utilities-op.js';
 /**
  * Модуль диапазонного слайдера с одним маркером
  * @module ./pin-slider
@@ -9,7 +10,7 @@ export class PinSlider {
   _coordShift = 0;
   _containerWidth = 0;
   _containerCoordLeft = 0;
-  _EVENT_TYPE = 'change-coord';
+  EVENT_CHANGE_COORD = 'change-coord';
 
   /**
    * Создает объект слайдера
@@ -35,23 +36,6 @@ export class PinSlider {
   }
 
   /**
-   * Метод позволяет ПОДписаться на событие изменения координат указателя слайдера из внешнего кода
-   * и вызывать каллбэк-функцию при каждом изменении координаты указателя
-   * @param {object} callbackFunc - каллбэк-функция, которая будет вызываться при изменении координат указателя
-   */
-  addChangeListener(callbackFunc) {
-    this.container.addEventListener(this._EVENT_TYPE, callbackFunc);
-  }
-
-  /**
-   * Метод позволяет ОТписаться от события изменения координат указателя слайдера из внешнего кода
-   * @param {object} callbackFunc - каллбэк-функция, которая была передана при подписывании на событие
-   */
-  removeChangeListener(callbackFunc) {
-    this.container.removeEventListener(this._EVENT_TYPE, callbackFunc);
-  }
-
-  /**
    * Метод удаляет обработчки событий изменения положения указателя
    * Должен вызваться внешним кодом, когда слайдер больше не нужен
    */
@@ -59,6 +43,10 @@ export class PinSlider {
     this.pin.removeEventListener('mousedown', this._onPinMousedown);
     this.pin.removeEventListener('dragstart', this._onPinDragStart);
     this.pin.removeEventListener('keydown', this._onPinKeydown);
+
+    if (this._eventHandlers) {
+      this._eventHandlers = null;
+    }
   }
 
   /**
@@ -100,7 +88,7 @@ export class PinSlider {
     this._setStyleElements(pinCoordLeft, this._containerWidth);
 
     // вызываем каллбек, передаем текущие координаты указателя и ширину контейнера
-    this._dispatchCustomEvent(pinCoordLeft, this._containerWidth);
+    this._dispatchEventChangeCoords(pinCoordLeft, this._containerWidth);
   }
 
   /**
@@ -147,7 +135,7 @@ export class PinSlider {
     this._setStyleElements(pinCoordLeft, containerWidth);
 
     // вызываем каллбек, передаем текущие координаты указателя и ширину контейнера
-    this._dispatchCustomEvent(pinCoordLeft, containerWidth);
+    this._dispatchEventChangeCoords(pinCoordLeft, containerWidth);
   }
 
   /**
@@ -194,12 +182,15 @@ export class PinSlider {
   }
 
   /**
-   * Посылает кастомное событие при измененнии координат указателя слайдера
+   * Вызывает переданные каллбэк функции из внешенго кода при измененнии координат указателя слайдера
    * @param {number} pinCoordLeft - координата указателя
    * @param {number} containerWidth - ширина контейнера слайдера
    */
-  _dispatchCustomEvent(pinCoordLeft, containerWidth) {
-    const changeCoordEvent = new CustomEvent(this._EVENT_TYPE, {bubbles: true, detail: {coord: pinCoordLeft, containerWidth}});
-    this.container.dispatchEvent(changeCoordEvent);
+  _dispatchEventChangeCoords(pinCoordLeft, containerWidth) {
+    // сгенерировать событие изменения координат и передать данные во внешний код
+    this.trigger(this.EVENT_CHANGE_COORD, {coord: pinCoordLeft, containerWidth});
   }
 }
+
+// в прототип объекта добавляем миксин для генерации событий объектом слайдера
+Object.assign(PinSlider.prototype, eventMixin);
