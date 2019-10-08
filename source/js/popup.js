@@ -1,3 +1,5 @@
+import {eventMixin} from './utilities-op.js';
+
 /**
  * Модуль модального попапа
  * @module ./popup
@@ -5,8 +7,9 @@
 
 export class Popup {
 
-  // название события, которое генерируется объектом попапа при закрытии окна
-  _eventType = 'close-popup';
+  // название событий, которые генерируются объектом попапа
+  EVENT_SHOW_POPUP = 'show-popup';
+  EVENT_CLOSE_POPUP = 'close-popup';
 
   /**
    * Создает объект модального попапа
@@ -28,9 +31,8 @@ export class Popup {
 
   /**
    * Открывает окно попапа
-   * @param {function} callbackFunc - функция, которая должна быть вызвана из внешнего кода при открытии окна
    */
-  showPopup(callbackFunc) {
+  showPopup() {
     this.overlay.classList.remove(this.hidePopupClass);
 
     // дополнительный клас на тег <BODY>, который устанавливается при открытии попапа
@@ -38,9 +40,8 @@ export class Popup {
       document.body.classList.add(this.documentBodyClass);
     }
 
-    if (callbackFunc) {
-      callbackFunc();
-    }
+    // вызываем событие открытия попапа
+    this.trigger(this.EVENT_SHOW_POPUP);
 
     // получаем и фокусируемся на первом доступном для фокусировки элементе внутри попапа
     let firstFocusableElement = this._getFirstElementForFocus(this.container);
@@ -75,25 +76,8 @@ export class Popup {
     document.removeEventListener('keydown', this._onPopupEscPress);
     document.removeEventListener('focusin', this._onPopupFocus);
 
-    // создаем и вызываем событие закрытия попапа
-    const closePopupEvent = new CustomEvent(this._eventType, {bubbles: true});
-    this.container.dispatchEvent(closePopupEvent);
-  }
-
-  /**
-   * Метод позволяет ПОДписаться на событие закрытия попапа
-   * @param {object} callbackFunc - каллбэк-функция, которая будет вызываться срабатывании события
-   */
-  addClosePopupListener(callbackFunc) {
-    this.container.addEventListener(this._eventType, callbackFunc);
-  }
-
-  /**
-   * Метод позволяет ОТписаться от события закрытия попапа
-   * @param {object} callbackFunc - каллбэк-функция, передавалась когда подписывались на событие
-   */
-  removeClosePopupListener(callbackFunc) {
-    this.container.removeEventListener(this._eventType, callbackFunc);
+    // вызываем событие закрытия попапа
+    this.trigger(this.EVENT_CLOSE_POPUP);
   }
 
   /**
@@ -178,3 +162,6 @@ export class Popup {
   }
 
 }
+
+// в прототип объекта добавляем примесь для генерации событий объектом модального окна
+Object.assign(Popup.prototype, eventMixin);

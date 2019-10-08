@@ -1,3 +1,5 @@
+import {eventMixin} from './utilities-op.js';
+
 /**
  * Модуль HTML-элемента - кнопочного переключается величины в заданном диапазоне
  * @module ./btns-range-switch
@@ -9,7 +11,7 @@
 */
 export class BtnsRangeSwitch {
 
-  _EVENT_TYPE = 'change-value';
+  EVENT_CHANGE_VALUE = 'change-value';
 
   /**
    * Создает объект переключателя с двумя кнопками и полем отображения изменяющейся величины
@@ -43,23 +45,6 @@ export class BtnsRangeSwitch {
   }
 
   /**
-   * Метод позволяет ПОДписаться на событие изменения величины в переключателе
-   * и вызывать каллбэк-функцию при каждом изменении
-   * @param {object} callbackFunc - каллбэк-функция, которая будет вызываться при изменении величины в переключателе
-   */
-  addChangeListener(callbackFunc) {
-    this.container.addEventListener(this._EVENT_TYPE, callbackFunc);
-  }
-
-  /**
-   * Метод позволяет ОТписаться от события изменения величины в переключателе
-   * @param {object} callbackFunc - каллбэк-функция, которую внешний код передал при подписывании на событие
-   */
-  removeChangeListener(callbackFunc) {
-    this.container.removeEventListener(this._EVENT_TYPE, callbackFunc);
-  }
-
-  /**
    * Метод удаляет обработчк события нажатия на кнопки изменения величины
    * Должен вызваться внешним кодом, когда переключатель больше не нужен
    */
@@ -88,7 +73,7 @@ export class BtnsRangeSwitch {
     this._setElementsStatus(this._currentValue);
 
     // вызываем событие изменения величины переключаетелем
-    this._dispatchCustomEvent(this._currentValue);
+    this._dispatchEventChangeValue(this._currentValue);
   }
 
   /**
@@ -132,11 +117,13 @@ export class BtnsRangeSwitch {
   }
 
   /**
-   * Посылает кастомное событие при измененнии величины переключателем
+   * Генерирует событие при измененнии величины переключателем
    * @param {number} currentValue - текущее значение величины, которая меняется переключателем
    */
-  _dispatchCustomEvent(currentValue) {
-    const changeValueEvent = new CustomEvent(this._EVENT_TYPE, {bubbles: true, detail: {value: currentValue}});
-    this.container.dispatchEvent(changeValueEvent);
+  _dispatchEventChangeValue(currentValue) {
+    this.trigger(this.EVENT_CHANGE_VALUE, {value: currentValue});
   }
 }
+
+// в прототип объекта добавляем примесь для генерации событий объектом переключателя
+Object.assign(BtnsRangeSwitch.prototype, eventMixin);

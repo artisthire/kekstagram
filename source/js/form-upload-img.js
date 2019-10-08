@@ -45,12 +45,16 @@ export class FormUploadImg {
   _onBtnUploadFileChange() {
     this._popup = new Popup(this._modalOverlay, this._modalContainer, [this._hashtagInput, this._descriptionInput], this._modalCloseBtn, 'hidden', 'modal-open');
 
-    // добавляем обработку закрытия попапа с формой
-    this._destroyForm = this._destroyForm.bind(this);
-    this._popup.addClosePopupListener(this._destroyForm);
+    // добавляем обработку события открытия попапа с формой
+    this._initForm = this._initForm.bind(this);
+    this._popup.on(this._popup.EVENT_SHOW_POPUP, this._initForm);
 
-    // отображаем форму
-    this._popup.showPopup(this._initForm.bind(this));
+    // добавляем обработку события закрытия попапа с формой
+    this._destroyForm = this._destroyForm.bind(this);
+    this._popup.on(this._popup.EVENT_CLOSE_POPUP, this._destroyForm);
+
+    // отображаем попап с формой
+    this._popup.showPopup();
   }
 
   /**
@@ -71,7 +75,8 @@ export class FormUploadImg {
    */
   _destroyForm() {
     // удаляем попап
-    this._popup.removeClosePopupListener(this._destroyForm);
+    this._popup.off(this._popup.EVENT_SHOW_POPUP, this._initForm);
+    this._popup.off(this._popup.EVENT_CLOSE_POPUP, this._destroyForm);
     this._popup = null;
 
     // удаляем обработчик эффектов изображения

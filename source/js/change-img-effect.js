@@ -66,7 +66,7 @@ export class ChangeImgEffect {
 
     // добавляем обработку масштабирования изображения при изменении величины переключателем
     this._scaleImg = this._scaleImg.bind(this);
-    this._scaler.addChangeListener(this._scaleImg);
+    this._scaler.on(this._scaler.EVENT_CHANGE_VALUE, this._scaleImg);
 
     // добавляем обработчик переключения типа наложенного эффекта
     this._onBtnsImageEffectChange = this._onBtnsImageEffectChange.bind(this);
@@ -84,14 +84,14 @@ export class ChangeImgEffect {
     // сбрасываем масштабирование картинки
     this.imgElement.style.transform = '';
 
-    this._scaler.removeChangeListener(this._scaleImg);
+    this._scaler.off(this._scaler.EVENT_CHANGE_VALUE, this._scaleImg);
     this._scaler.destructor();
     this._scaler = null;
 
     if (this._pinSlider) {
       // отписаться от события изменения эффекта на изображении при изменении указателя слайдера
       this._pinSlider.off(this._pinSlider.EVENT_CHANGE_COORD, this._setEffectLevel);
-      // this._pinSlider.removeChangeListener(this._setEffectLevel);
+
       this._pinSlider.destructor();
       this._pinSlider = null;
     }
@@ -121,13 +121,10 @@ export class ChangeImgEffect {
       // создаем слайдер для управления уровнем эффекта
       if (!this._pinSlider) {
         this._pinSlider = new PinSlider(this._sliderContainer, this._sliderPin, this._sliderDepth);
-        this._setEffectLevel = this._setEffectLevel.bind(this);
-        // подписаться на событие изменения координат слайдера и применить функцию изменения эффекта
-        this._pinSlider.on(this._pinSlider.EVENT_CHANGE_COORD, this._setEffectLevel);
 
-        // добавляем обработку изменения уровня эффекта
-        // this._setEffectLevel = this._setEffectLevel.bind(this);
-        // this._pinSlider.addChangeListener(this._setEffectLevel);
+        // подписаться на событие изменения координат слайдера и передать функцию изменения эффекта
+        this._setEffectLevel = this._setEffectLevel.bind(this);
+        this._pinSlider.on(this._pinSlider.EVENT_CHANGE_COORD, this._setEffectLevel);
       }
     }
   }
@@ -170,7 +167,7 @@ export class ChangeImgEffect {
    */
   _scaleImg(scalerEvent) {
     // получаем текущую величину из переключателя
-    let scaleValue = scalerEvent.detail.value / 100;
+    let scaleValue = scalerEvent.value / 100;
     // устанавливаем стили для масштабирования изображения
     this.imgElement.style.transform = `scale(${scaleValue})`;
   }

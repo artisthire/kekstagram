@@ -43,10 +43,6 @@ export class PinSlider {
     this.pin.removeEventListener('mousedown', this._onPinMousedown);
     this.pin.removeEventListener('dragstart', this._onPinDragStart);
     this.pin.removeEventListener('keydown', this._onPinKeydown);
-
-    if (this._eventHandlers) {
-      this._eventHandlers = null;
-    }
   }
 
   /**
