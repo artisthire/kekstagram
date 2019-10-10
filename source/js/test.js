@@ -1,22 +1,24 @@
 import {FormUploadImg} from './form-upload-img.js';
 import {loadDataPictures} from './server-interaction.js';
 import {UsersPictures} from './users-pictures.js';
-
-let picturesData;
+import {PicturePreview} from './picture-preview.js';
 
 let usersPictures = new UsersPictures();
 
 loadDataPictures((data) => {
-  picturesData = data;
+  // сохранить загруженные данные о картинках
+  console.log(data);
+  sessionStorage.setItem('picturesData', JSON.stringify(data));
+  // отображить картинки на экране
   usersPictures.addUsersPictures(data);
-  console.log(picturesData);
 },
 console.log);
 
 let btnUploadFile = document.querySelector('#upload-file');
 let formUploadImg = new FormUploadImg(btnUploadFile);
 
-
+let picturesContainerElement = document.querySelector('.pictures');
+let picturePreview = new PicturePreview(picturesContainerElement);
 /*
 /*
 // контейнер, внутри которого перемещается указатель

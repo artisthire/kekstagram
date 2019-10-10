@@ -1,4 +1,7 @@
-import {insertElementsToFragment} from './utilities-op.js';
+/**
+ * Модуль с классом для добавления картинок пользователей на главный экран
+ * @module ./users-pictures
+ */
 
 export class UsersPictures {
   //TODO: дописать методы фильтрации изображений
@@ -10,18 +13,22 @@ export class UsersPictures {
     this.pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
   }
 
+  /**
+   * Добавляет картинки пользователей в контейнер
+   * @param {array} picturesData - массив с данными по картинкам
+   */
   addUsersPictures(picturesData) {
-    // создаем массив с пользовательскими картинками на основе шаблона
-    let picturesElements = picturesData.reduce((container, pictureData) => {
-      container.push(this._createPictureElement(pictureData));
+    // создаем массив с пользовательскими картинками на основе данных
+    let picturesElements = picturesData.map(
+        (pictureData) => this._createPictureElement(pictureData)
+    );
 
-      return container;
-    },
-    []);
-
-    insertElementsToFragment(picturesElements, this.picturesContainer);
+    this.picturesContainer.append(...picturesElements);
   }
 
+  /**
+   * Удаляет все картинки в контейнере
+   */
   deleteUsersPictures() {
     let pictures = Array.from(this.picturesContainer.querySelectorAll('.picture'));
     pictures.forEach(
@@ -29,9 +36,16 @@ export class UsersPictures {
     );
   }
 
+  /**
+   * Создает HTML-элементы ссылок на пользовательские картинки на основе шаблона и данных, полученных с сервера
+   * @param {object} picturesData - объект с данными по отдельной картинке
+   * @return {object} - возвращает HTML-элемент <a> согласно шаблона с заполенными атрибутами согласно полученных данных
+   */
   _createPictureElement(pictureData) {
+    // сделать копию шаблона ссылки на картинку
     let pictureElement = this.pictureTemplate.cloneNode(true);
 
+    // заполнить аттрибуты на основе данных
     pictureElement.querySelector('.picture__img').src = pictureData.url;
     pictureElement.querySelector('.picture__likes').textContent = pictureData.likes;
     pictureElement.querySelector('.picture__comments').textContent = pictureData.comments.length;
