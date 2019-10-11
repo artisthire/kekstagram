@@ -1,4 +1,4 @@
-export {eventMixin};
+export {eventMixin, getUniqueRandomArrayNumbers};
 
 /**
  * Миксин для добавления функционала генерации событий другим объектам
@@ -58,3 +58,29 @@ let eventMixin = {
     this._eventHandlers[eventName].forEach((handler) => handler.apply(this, args));
   }
 };
+
+/**
+ * Используется для генерации массива уникальных случайных чисел в заданном диапазоне
+ * @param {number} arrLength - количество уникальных числев в результирующем массиве
+ * @param {number} rangeMin - нижний предел от которого (включая) генерируются случайные числа
+ * @param {number} rangeMax - верхний предел до которого (не включая) генерируются случайные числа
+ * @return {array}  - массив уникальных случайных чисел
+ */
+function getUniqueRandomArrayNumbers(arrLength, rangeMin = 0, rangeMax) {
+
+  if (rangeMin >= rangeMax) {
+    return [];
+  }
+
+  // создаем новое множество
+  let randomArray = new Set();
+
+  // заполняем множество случайными числами до величины, согласно arrLength
+  while (randomArray.size < arrLength) {
+    let newNumber = Math.floor(Math.random() * (rangeMax - rangeMin) + rangeMin);
+    randomArray.add(newNumber);
+  }
+
+  // преобразуем множество в массив и возвращаем значение
+  return Array.from(randomArray);
+}

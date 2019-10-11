@@ -2,8 +2,9 @@ import {FormUploadImg} from './form-upload-img.js';
 import {loadDataPictures} from './server-interaction.js';
 import {UsersPictures} from './users-pictures.js';
 import {PicturePreview} from './picture-preview.js';
+import {FilterPictures} from './filter-pictures.js';
 
-let usersPictures = new UsersPictures();
+const usersPictures = new UsersPictures();
 
 loadDataPictures((data) => {
   // сохранить загруженные данные о картинках
@@ -14,11 +15,13 @@ loadDataPictures((data) => {
 },
 console.log);
 
-let btnUploadFile = document.querySelector('#upload-file');
-let formUploadImg = new FormUploadImg(btnUploadFile);
+const btnUploadFile = document.querySelector('#upload-file');
+const formUploadImg = new FormUploadImg(btnUploadFile);
 
-let picturesContainerElement = document.querySelector('.pictures');
-let picturePreview = new PicturePreview(picturesContainerElement);
+const picturesContainerElement = document.querySelector('.pictures');
+const picturePreview = new PicturePreview(picturesContainerElement);
+
+const filterPictures = new FilterPictures();
 /*
 /*
 // контейнер, внутри которого перемещается указатель

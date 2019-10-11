@@ -4,8 +4,7 @@
  */
 
 export class UsersPictures {
-  //TODO: дописать методы фильтрации изображений
-  //TODO: далее функционал предпросмотра изображений - preview.js
+
   constructor() {
     // контейнер, куда вставляются картинки
     this.picturesContainer = document.querySelector('.pictures');
