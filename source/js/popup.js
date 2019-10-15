@@ -17,23 +17,26 @@ export class Popup {
    * @param {object} container - HTML-элемент - общий контейнер попапа, содержится непосредственно внутри оверлея
    * @param {array} inputFields - массив input-элементов, внутри которых будет игнорироваться нажатие кнопки ESC для закрытия попапа
    * @param {object} closeBtn - HTML-элемент - ссылка на кнопку закрытия окна
-   * @param {string} hidePopupClass - строка с именем класса, который нужно убрать для открытия окна
-   * @param {string} documentBodyClass - строка с именем класса, который нужно добавить к BODY при открытии окна
+   * @param {object} option - объект, содержащий дополнительные настройки для открытия попапа:
+   *  {string} option.hiddenPopupClass - название класса для сокрытия попапа
+   *  {string} option.documentBodyClass - название класса, который добавляется к BODY при открытии попапа
+   *  {boolean} option.autofocus - включает установку автофокуса на первом элементе управления внутри попапа
    */
-  constructor(overlay, container, inputFields, closeBtn, hidePopupClass, documentBodyClass) {
+  constructor(overlay, container, inputFields, closeBtn, options = {}) {
     this.overlay = overlay;
     this.container = container;
     this.inputFields = inputFields;
     this.closeBtn = closeBtn;
-    this.hidePopupClass = hidePopupClass || 'hidden';
-    this.documentBodyClass = documentBodyClass;
+    this.hiddenPopupClass = options.hiddenPopupClass || 'hidden';
+    this.documentBodyClass = options.documentBodyClass || 'modal-open';
+    this.autofocus = options.autofocus;
   }
 
   /**
    * Открывает окно попапа
    */
   showPopup() {
-    this.overlay.classList.remove(this.hidePopupClass);
+    this.overlay.classList.remove(this.hiddenPopupClass);
 
     // дополнительный клас на тег <BODY>, который устанавливается при открытии попапа
     if (this.documentBodyClass) {
@@ -43,11 +46,13 @@ export class Popup {
     // вызываем событие открытия попапа
     this.trigger(this.EVENT_SHOW_POPUP);
 
-    // получаем и фокусируемся на первом доступном для фокусировки элементе внутри попапа
-    let firstFocusableElement = this._getFirstElementForFocus(this.container);
+    if (this.autofocus) {
+      // получаем и фокусируемся на первом доступном для фокусировки элементе внутри попапа
+      let firstFocusableElement = this._getFirstElementForFocus(this.container);
 
-    if (firstFocusableElement) {
-      firstFocusableElement.focus();
+      if (firstFocusableElement) {
+        firstFocusableElement.focus();
+      }
     }
 
     this._onBtnCloseClick = this._onBtnCloseClick.bind(this);
@@ -65,7 +70,7 @@ export class Popup {
    * При закрытии генерирует событие закрытия окна для внешнего кода
    */
   closePopup() {
-    this.overlay.classList.add(this.hidePopupClass);
+    this.overlay.classList.add(this.hiddenPopupClass);
 
     if (this.documentBodyClass) {
       document.body.classList.remove(this.documentBodyClass);
