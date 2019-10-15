@@ -32,6 +32,7 @@ export class FormUploadImg {
     this._hashtagInput = this._modalContainer.querySelector('.text__hashtags');
     this._descriptionInput = this._modalContainer.querySelector('.text__description');
     this._imgElement = this._modalContainer.querySelector('.img-upload__preview > img');
+    this._imgsEffectPreview = Array.from(this._modalContainer.querySelectorAll('.effects__preview'));
 
     // добавляет обработчки загрузки файла на переданную кнопку управления
     this._onBtnUploadFileChange = this._onBtnUploadFileChange.bind(this);
@@ -43,7 +44,17 @@ export class FormUploadImg {
    * Форма создается в отдельно попапе
    */
   _onBtnUploadFileChange() {
-    this._popup = new Popup(this._modalOverlay, this._modalContainer, [this._hashtagInput, this._descriptionInput], this._modalCloseBtn, 'hidden', 'modal-open');
+    let file = this.btnUploadFile.files[0];
+
+    if (!file.type.includes('image')) {
+      return;
+    }
+
+    this._urlCode = URL.createObjectURL(file);
+    this._imgElement.src = this._urlCode;
+    this._imgsEffectPreview.forEach((img) => img.style.backgroundImage = `url(${this._urlCode})`);
+
+    this._popup = new Popup(this._modalOverlay, this._modalContainer, [this._hashtagInput, this._descriptionInput], this._modalCloseBtn, {autofocus: true});
 
     // добавляем обработку события открытия попапа с формой
     this._initForm = this._initForm.bind(this);
@@ -78,6 +89,8 @@ export class FormUploadImg {
     this._popup.off(this._popup.EVENT_SHOW_POPUP, this._initForm);
     this._popup.off(this._popup.EVENT_CLOSE_POPUP, this._destroyForm);
     this._popup = null;
+
+    URL.revokeObjectURL(this._urlCode);
 
     // удаляем обработчик эффектов изображения
     this._changerImgEffect.destructor();

@@ -58,7 +58,7 @@ export class PicturePreview {
     // поочередно сравнивая ссылки на картинки в загруженных данных с ссылкой на картинку элемента по которому кликнули
     let pictureData = picturesData.find((currentPictureData) => currentPictureData.url === imgElement.getAttribute('src'));
     // создаем попап для отображения модального окна с предпросмотром выбранной картинки
-    this._popup = new Popup(this._modalOverlay, this._modalContainer, [this._userCommentInput], this._modalCloseBtn, 'hidden', 'modal-open');
+    this._popup = new Popup(this._modalOverlay, this._modalContainer, [this._userCommentInput], this._modalCloseBtn);
 
     // инициируем и отображаем попап с картинкой
     this._initPicturePreviewBlock(pictureData);
