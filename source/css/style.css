@@ -753,6 +753,10 @@ main {
   border-radius: 5px;
 }
 
+.text__hashtags[data-input-invalid] {
+  margin-bottom: 0;
+}
+
 .text__description {
   width: 450px;
   height: 100px;
@@ -1402,6 +1406,25 @@ main {
   -webkit-transform: translateX(-50%);
       -ms-transform: translateX(-50%);
           transform: translateX(-50%);
+}
+
+.field-validation {
+  width: 450px;
+  margin: 5px auto;
+  margin-bottom: 15px;
+  font-family: inherit;
+  text-transform: none;
+  text-align: left;
+  color: #8aff00;
+}
+
+.field-validation__item {
+  padding-left: 10px;
+}
+
+.field-validation__item--error {
+  font-weight: 700;
+  color: #ffe753;
 }
 
 
