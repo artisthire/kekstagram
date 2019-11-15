@@ -120,87 +120,146 @@ export class FormUploadImg {
     this.form.removeEventListener('submit', this._onFormSubmit);
   }
 
+  /**
+   * Функция-каллбэк для события отправки формы
+   * @param {object} evt - объект события
+   */
   _onFormSubmit(evt) {
     evt.preventDefault();
 
     // ищем невалидные поля ввода в форме
     let invalidInputs = this.form.querySelectorAll(`[${ATTR_INVALID_INPUT}]`);
 
+    // есои есть невалидные поля, форму не отправляем
     if (invalidInputs.length !== 0) {
       // фокусировка на первом невалидном поле ввода
       invalidInputs[0].focus();
       return;
     }
 
+    // отправляем данные формы
     sendDataPicture(new FormData(this.form), () => this._popup.closePopup(), console.log);
   }
 
+  /**
+   * Функция-каллбэк ввода в поле хэш-тегов
+   * @param {object} evt - объект события
+   */
   _onHashtagInput(evt) {
+    // проверяем валидность поля хэш-тега
     this._hashtagValidate(evt.target);
   }
 
+  /**
+   * Функция-каллбэк ввода в поле комментариев
+   * @param {object} evt - объект события
+   */
   _onCommentInput(evt) {
+    // проверяем валидность поля комментариев
     this._commentValidate(evt.target);
   }
 
+  /**
+   * Функция для проверки валидности поля ввода хэш-тегов
+   * @param {object} inputElement - ссылка на INPUT поля ввода хэщ-тегов
+   * @return {boolean} - статус, соответствует ли поле всем критериям валидации
+   */
   _hashtagValidate(inputElement) {
     let hashtags = inputElement.value;
 
+    // поле необязательное, поэтому если ничего не введено, поле валидно
     if (hashtags.length === 0) {
+      // удаляем подсказку с ошибками валидации
       this._hashtagValidationTooltip.destroy();
+      // убираем аттрибут невалидности поля
       this._markValidationInput(inputElement, true);
+
       return true;
     }
-
+    // разделитель хэш-тегов в воле ввода
     const SEPARATOR = ' ';
-    let tests = this._getHashtagTests();
-
     hashtags = hashtags.trim().toLowerCase().split(SEPARATOR);
+    // получаем тесты для критериев, которым должно соответствовать поле
+    let tests = this._getHashtagTests();
+    // проверяем соответствие поля полученным тестам
+    // при несоотвествии отображаем ошибку валидации
     let status = this._inputValidate(hashtags, tests, this._hashtagValidationTooltip);
-
+    // помечаем поле невалидным, если status = false
     this._markValidationInput(inputElement, status);
 
     return status;
   }
 
+  /**
+   * Функция для проверки валидности поля ввода комментариев
+   * @param {object} inputElement - ссылка на INPUT поля ввода комментариев
+   * @return {boolean} - статус, соответствует ли поле всем критериям валидации
+   */
   _commentValidate(inputElement) {
     let comment = inputElement.value;
 
+    // поле не обязательное, поэтму если ничего не введено, поле валидно
     if (comment.length === 0) {
+      // удаляем подсказку с ошибками валидации
       this._commentValidationTooltip.destroy();
+      // убираем аттрибут невалидности поля
       this._markValidationInput(inputElement, true);
+
       return true;
     }
-
+    // получаем тести для критериев валидност поля
     let tests = this._getCommentTests();
+    // проверяем валидност поля и показываем подсказку с критериями в случае невалидности
     let status = this._inputValidate(comment, tests, this._commentValidationTooltip);
-
+    // помечаем поле невалидным, если status = false
     this._markValidationInput(inputElement, status);
 
     return status;
   }
 
+  /**
+   * Метод тестирует валидируемое поле в соотвествии с критериями
+   * При необходимости показывает ошибки валидации поля формы
+   * @param {string} inputValues - строковое значение поля формы
+   * @param {object} tests - объект с тестами, проверяющими валидность поля, и сообщениями, которым должно соответствовать поле
+   * @param {object} validationTooltip - экземляр объекта класса, реализующего функционал отображения ошибок валидации
+   * @return {boolean} - статус, соответствует ли поле всем критериям валидации
+   */
   _inputValidate(inputValues, tests, validationTooltip) {
+    // переменная содержит список статуса валидации и соответствующего текста критерия валидации
     let validationResult = {status: [], messages: []};
 
+    // заполяем переменную результатами тестирования поля и соотвествующими строковыми описаниями критериев тестирования
     tests.forEach((test) => {
       validationResult.status.push(test.func(inputValues));
       validationResult.messages.push(test.message);
     });
 
+    // если все тесты пройдены (все поля = true), удаляем сообщения ошибок валидации
     if (validationResult.status.every((valid) => valid)) {
       validationTooltip.destroy();
+
       return true;
     }
 
+    // добавляем сообщения с ошибками валидации
     validationTooltip.addMessages(validationResult);
+
     return false;
   }
 
+  /**
+   * Функция возвращающая тесты (функции) которыми проверяется валидность поля хэш-тегов
+   * А также сообщения критериев валидации, которые соответствуют применяемым тестам к полю
+   * @return {array} - массив с функциями для теститрования поля и строковым описанием критериев
+   */
   _getHashtagTests() {
+    // максимальное колличество хэш-тегов
     const MAX_COUNT = 5;
+    // максимальное колличество символов каждого отдельного хэш-тега
     const MAX_LENGTH = 20;
 
+    // функции тестирования соотвествия критериям
     let testFunctions = {
       maxCount: (hashtags) => hashtags.length <= MAX_COUNT,
       maxLength: (hashtags) => !hashtags.some((hashtag) => hashtag.length > MAX_LENGTH),
@@ -218,6 +277,7 @@ export class FormUploadImg {
       return hashtags.length === uniqueHashtags.size;
     };
 
+    // массив с тестами и текстовым описанием критериев
     let tests = [
       {func: testFunctions.maxCount, message: `Допустимо ${MAX_COUNT} хэш-тегов`},
       {func: testFunctions.maxLength, message: `Максимальная длинна хэш-тега должна быть не больше ${MAX_LENGTH} символов`},
@@ -230,13 +290,21 @@ export class FormUploadImg {
     return tests;
   }
 
+  /**
+   * Функция возвращающая тесты (функции) которыми проверяется валидность поля коментариев
+   * А также сообщения критериев валидации, которые соответствуют применяемым тестам к полю
+   * @return {array} - массив с функциями для теститрования поля и строковым описанием критериев
+   */
   _getCommentTests() {
+    // максимальное колличество символов поля комментарив
     const MAX_LENGTH = 140;
 
+    // функции для тестирования поля комментариев
     let testFunctions = {
       maxLength: (comment) => comment.length < MAX_LENGTH,
     };
 
+    // тесты для поля ввода комментариев и сооответствующие текстовые описание критериев
     let tests = [
       {func: testFunctions.maxLength, message: `Максимальная длинна комментария должна быть не больше ${MAX_LENGTH} символов`},
     ];
@@ -244,6 +312,11 @@ export class FormUploadImg {
     return tests;
   }
 
+  /**
+   * Добавляет/удаляет аттрибут невалидности валидируемого поля
+   * @param {object} inputElement - HTML-элемент поля ввода, к которому добавляется аттрибут
+   * @param {boolean} status - true - поле валидно, убрать аттрибут, false - не валидно, добавить аттрибут
+   */
   _markValidationInput(inputElement, status) {
 
     if (status) {
