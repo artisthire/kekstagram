@@ -215,8 +215,8 @@
       <div class="error__inner">
         <h2 class="error__title">Ошибка загрузки файла</h2>
         <div class="error__buttons">
-          <button type="button" class="error__button">Попробовать снова</button>
-          <button type="button" class="error__button">Загрузить другой файл</button>
+          <button type="button" class="error__button" data-try-again>Попробовать снова</button>
+          <button type="button" class="error__button" data-load-new>Загрузить другой файл</button>
         </div>
       </div>
     </section>
@@ -234,7 +234,9 @@
 
   Экран загрузки изображения
   <template id="messages">
-    <div class="img-upload__message  img-upload__message--loading">Загружаем...</div>
+    <div class="overlay">
+      <div class="img-upload__message  img-upload__message--loading">Загружаем...</div>
+    </div>
   </template>
 
   <!-- <script src="js/utilities.js"></script> -->
@@ -258,6 +260,7 @@
   <script src="js/popup.js" type="module"></script>
   <script src="js/change-img-effect.js" type="module"></script>
   <script src="js/validation-tooltip.js" type="module"></script>
+  <script src="js/form-data-sender.js" type="module"></script>
   <script src="js/form-upload-img.js" type="module"></script>
   <script src="js/test.js" type="module"></script>
 </body>

@@ -58,7 +58,7 @@ export class PicturePreview {
     // поочередно сравнивая ссылки на картинки в загруженных данных с ссылкой на картинку элемента по которому кликнули
     let pictureData = picturesData.find((currentPictureData) => currentPictureData.url === imgElement.getAttribute('src'));
     // создаем попап для отображения модального окна с предпросмотром выбранной картинки
-    this._popup = new Popup(this._modalOverlay, this._modalContainer, [this._userCommentInput], this._modalCloseBtn);
+    this._popup = new Popup(this._modalOverlay, this._modalContainer, [this._userCommentInput], this._modalCloseBtn, {documentBodyClass: 'modal-open'});
 
     // инициируем и отображаем попап с картинкой
     this._initPicturePreviewBlock(pictureData);
@@ -122,6 +122,7 @@ class SocialCommentsBlock {
    */
   destroySocialCommentsBlock() {
     this._userCommentInput.value = '';
+    this._btnMoreComments.hidden = '';
     this._btnMoreComments.removeEventListener('click', this._onMoreCommentsClick);
   }
 
@@ -156,7 +157,7 @@ class SocialCommentsBlock {
     if (this._nextCommentItem >= this.commentsData.length) {
       this._nextCommentItem = this.commentsData.length;
 
-      this._btnMoreComments.disabled = true;
+      this._btnMoreComments.hidden = true;
       this._btnMoreComments.removeEventListener('click', this._onMoreCommentsClick);
     }
 

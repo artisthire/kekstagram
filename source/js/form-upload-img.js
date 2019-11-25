@@ -6,7 +6,7 @@
  */
 import {ChangeImgEffect} from './change-img-effect.js';
 import {Popup} from './popup.js';
-import {sendDataPicture} from './server-interaction.js';
+import {FormDataSender} from './form-data-sender.js';
 import {ValidationTooltip} from './validation-tooltip.js';
 
 const ATTR_INVALID_INPUT = 'data-input-invalid';
@@ -138,7 +138,9 @@ export class FormUploadImg {
     }
 
     // отправляем данные формы
-    sendDataPicture(new FormData(this.form), () => this._popup.closePopup(), console.log);
+    let sender = new FormDataSender(this.form, this._popup, this.btnUploadFile);
+    sender.sendData();
+    // sendDataPicture(new FormData(this.form), () => this._popup.closePopup(), console.log);
   }
 
   /**

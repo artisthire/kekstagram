@@ -28,7 +28,7 @@ export class Popup {
     this.inputFields = inputFields;
     this.closeBtn = closeBtn;
     this.hiddenPopupClass = options.hiddenPopupClass || 'hidden';
-    this.documentBodyClass = options.documentBodyClass || 'modal-open';
+    this.documentBodyClass = options.documentBodyClass;
     this.autofocus = options.autofocus;
   }
 
@@ -59,7 +59,9 @@ export class Popup {
     this._onPopupEscPress = this._onPopupEscPress.bind(this);
     this._onPopupFocus = this._onPopupFocus.bind(this);
     this._onOverlayClick = this._onOverlayClick.bind(this);
-    this.closeBtn.addEventListener('click', this._onBtnCloseClick);
+    if (this.closeBtn) {
+      this.closeBtn.addEventListener('click', this._onBtnCloseClick);
+    }
     this.overlay.addEventListener('click', this._onOverlayClick);
     document.addEventListener('keydown', this._onPopupEscPress);
     document.addEventListener('focusin', this._onPopupFocus);
@@ -76,7 +78,10 @@ export class Popup {
       document.body.classList.remove(this.documentBodyClass);
     }
 
-    this.closeBtn.removeEventListener('click', this._onBtnCloseClick);
+    if (this.closeBtn) {
+      this.closeBtn.removeEventListener('click', this._onBtnCloseClick);
+    }
+
     this.overlay.removeEventListener('click', this._onOverlayClick);
     document.removeEventListener('keydown', this._onPopupEscPress);
     document.removeEventListener('focusin', this._onPopupFocus);
@@ -101,7 +106,7 @@ export class Popup {
   _onPopupEscPress(evt) {
 
     // если нажата кнопка ESC не в одном из полей ввода
-    if (evt.code === 'Escape' && !this.inputFields.includes(evt.target)) {
+    if (evt.code === 'Escape' && this.inputFields && !this.inputFields.includes(evt.target)) {
       this.closePopup();
     }
   }
