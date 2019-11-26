@@ -37,7 +37,7 @@ export class UsersPictures {
 
   /**
    * Создает HTML-элементы ссылок на пользовательские картинки на основе шаблона и данных, полученных с сервера
-   * @param {object} picturesData - объект с данными по отдельной картинке
+   * @param {object} pictureData - объект с данными по отдельной картинке
    * @return {object} - возвращает HTML-элемент <a> согласно шаблона с заполенными атрибутами согласно полученных данных
    */
   _createPictureElement(pictureData) {
