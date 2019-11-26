@@ -41,8 +41,7 @@ export class FormDataSender {
     let container = this._successWindow.firstElementChild;
     let inputFields = null;
     let closeBtn = this._successWindow.querySelector('.success__button');
-    let options = {autofocus: true};
-    let successPopup = new Popup(overlay, container, inputFields, closeBtn, options);
+    let successPopup = new Popup(overlay, container, inputFields, closeBtn);
     successPopup.showPopup();
     // добавляем обработчик закрытия окна успешной отправки данных
     successPopup.on(successPopup.EVENT_CLOSE_POPUP, () => this._successWindow.remove());
@@ -58,38 +57,37 @@ export class FormDataSender {
     let overlay = this._errorWindow;
     let container = this._errorWindow.firstElementChild;
     let inputFields = null;
-    let closeBtn = null;
-    let options = {autofocus: true};
     this._tryAgainBtn = this._errorWindow.querySelector('[data-try-again]');
     this._loadNewFileBtn = this._errorWindow.querySelector('[data-load-new]');
+    let closeBtns = [this._tryAgainBtn, this._loadNewFileBtn];
 
     this._onTryAgainBtnClick = this._onTryAgainBtnClick.bind(this);
     this._tryAgainBtn.addEventListener('click', this._onTryAgainBtnClick);
     this._onLoadNewFileBtnClick = this._onLoadNewFileBtnClick.bind(this);
     this._loadNewFileBtn.addEventListener('click', this._onLoadNewFileBtnClick);
 
-    let errorPopup = new Popup(overlay, container, inputFields, closeBtn, options);
+    let errorPopup = new Popup(overlay, container, inputFields, closeBtns);
     errorPopup.showPopup();
-    this._closeErrorPopup = this._closeErrorPopup.bind(this);
-    errorPopup.on(errorPopup.EVENT_CLOSE_POPUP, this._closeErrorPopup);
+    this._closeErrorWindow = this._closeErrorWindow.bind(this);
+    errorPopup.on(errorPopup.EVENT_CLOSE_POPUP, this._closeErrorWindow);
   }
 
   _onTryAgainBtnClick(evt) {
     evt.preventDefault();
-    this._closeErrorPopup();
+    this._closeErrorWindow();
 
     this.sendData();
   }
 
   _onLoadNewFileBtnClick(evt) {
     evt.preventDefault();
-    this._closeErrorPopup();
+    this._closeErrorWindow();
 
     // вызываем форму загрузки файла заново
     this.showFormBtn.click();
   }
 
-  _closeErrorPopup() {
+  _closeErrorWindow() {
     this._tryAgainBtn.removeEventListener('click', this._onTryAgainBtnClick);
     this._loadNewFileBtn.removeEventListener('click', this._onLoadNewFileBtnClick);
     this._errorWindow.remove();

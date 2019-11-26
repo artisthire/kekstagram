@@ -55,7 +55,7 @@ export class FormUploadImg {
     this._imgElement.src = this._urlCode;
     this._imgsEffectPreview.forEach((img) => img.style.backgroundImage = `url(${this._urlCode})`);
 
-    this._popup = new Popup(this._modalOverlay, this._modalContainer, [this._hashtagInput, this._commentInput], this._modalCloseBtn, {autofocus: true});
+    this._popup = new Popup(this._modalOverlay, this._modalContainer, [this._hashtagInput, this._commentInput], this._modalCloseBtn, {swap: false});
 
     // добавляем обработку события открытия попапа с формой
     this._initForm = this._initForm.bind(this);
