@@ -137,12 +137,11 @@ export class Popup {
    * @param {object} evt - объект события
    */
   _onPopupEscPress(evt) {
-
     // если нажата кнопка ESC
     if (evt.code === 'Escape') {
 
-      // если кнопка не в одном из полей ввода
-      if (this.inputFields && !this.inputFields.includes(evt.target)) {
+      // кнопка не в одном из полей ввода
+      if (this.inputFields && this.inputFields.includes(evt.target)) {
         return;
       }
       // закрываем попап
