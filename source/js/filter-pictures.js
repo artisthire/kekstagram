@@ -1,6 +1,11 @@
 import {UsersPictures} from './users-pictures.js';
 import {getUniqueRandomArrayNumbers} from './utilities-op.js';
 
+// время в милисекундах для устранения "дребезга" переключения кнопок фильтра
+const BOUNCE_TIME = 500;
+// аттрибут, который добавляется к форме с кнопками для устранения повторного нажатия кнопок фильтра до истечения таймаута
+const BOUCE_ATTR = 'data-btn-bouce';
+
 /**
  * Модуль фильтрации картинок на главном экране
  * @module ./users-pictures
@@ -14,6 +19,9 @@ export class FilterPictures {
     this.container = document.querySelector('.img-filters');
     this.form = this.container.querySelector('.img-filters__form');
     this.filterBtns = Array.from(this.form.querySelectorAll('.img-filters__button'));
+
+    this._removeBouceTimeout = this._removeBouceTimeout.bind(this);
+    this._onBtnFilterClick = this._onBtnFilterClick.bind(this);
 
     // используется для сопоставления ID кнопки фильтра с функцией фильтрации изображений, которую нужно вызвать
     this._idToFilterFunc = {
@@ -36,7 +44,6 @@ export class FilterPictures {
     // получаем ссылку на объект для управления миниатюрами картинок
     this._usersPictures = new UsersPictures();
     // добавляем обработчик событий при клике на одну из картинок
-    this._onBtnFilterClick = this._onBtnFilterClick.bind(this);
     this.form.addEventListener('click', this._onBtnFilterClick);
   }
 
@@ -45,14 +52,22 @@ export class FilterPictures {
    * @param {object} evt - объект события клика по кнопке
    */
   _onBtnFilterClick(evt) {
-    const targetBtn = evt.target;
+    let targetBtn = evt.target;
 
-    // если клик не по одной из кнопок фильтрации либо по уже активной кнопке
+    // если клик не по одной из кнопок фильтрации
+    // либо по уже активной кнопке
+    // либо на форме установлен аттрибуте предотвращающий повторную фильтрацию в течении заданного таймаута
     // ничего не делаем
     if (!this.filterBtns.includes(targetBtn) ||
-        targetBtn.classList.contains('img-filters__button--active')) {
+        targetBtn.classList.contains('img-filters__button--active') ||
+        this.form.hasAttribute(BOUCE_ATTR)) {
       return;
     }
+
+    // устанавливаем аттрибут, который предотвратит повторное нажатие кнопок до истечения заданной задержки
+    this.form.setAttribute(BOUCE_ATTR, '');
+    // запускаем таймер с функцией удаления аттрибута отмены нажатия через заданную задержку
+    this._bouceTimer = setTimeout(this._removeBouceTimeout, BOUNCE_TIME);
 
     // находим предыдущую активную кнопку
     let prevActiveBtn = this.filterBtns.find((currentBtn) => currentBtn.classList.contains('img-filters__button--active'));
@@ -72,6 +87,14 @@ export class FilterPictures {
 
     // добавляем отфильтрованные картинки на страницу
     this._usersPictures.addUsersPictures(filterPicturesData);
+  }
+
+  /**
+   * Удаляет аттрибут в форме с кнопками фильтарции, который останавливает повторное нажатие на кнопки
+   */
+  _removeBouceTimeout() {
+    clearTimeout(this._bouceTimer);
+    this.form.removeAttribute(BOUCE_ATTR);
   }
 
   /**
