@@ -266,7 +266,7 @@ export class FormUploadImg {
       maxCount: (hashtags) => hashtags.length <= MAX_COUNT,
       maxLength: (hashtags) => !hashtags.some((hashtag) => hashtag.length > MAX_LENGTH),
       startsWith: (hashtags) => !hashtags.some((hashtag) => !hashtag.startsWith('#')),
-      errorChart: (hashtags) => !hashtags.some((hashtag) => new RegExp('[^\\p{L}\\-#]', 'ug').test(hashtag) || hashtag.slice(1).includes('#')),
+      errorChart: (hashtags) => !hashtags.some((hashtag) => new RegExp('[^A-Za-z\u0400-\u04FF\\-#]', 'g').test(hashtag) || hashtag.slice(1).includes('#')),
       minCharts: (hashtags) => !hashtags.some((hashtag) => hashtag.startsWith('#') && hashtag.length === 1)
     };
 
