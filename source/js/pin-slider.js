@@ -7,11 +7,6 @@ import {eventMixin} from './utilities-op.js';
 /** Class представляет слайдер с одним указателем, перемещающимя в пределах контейнера слайдера */
 export class PinSlider {
 
-  _coordShift = 0;
-  _containerWidth = 0;
-  _containerCoordLeft = 0;
-  EVENT_CHANGE_COORD = 'change-coord';
-
   /**
    * Создает объект слайдера
    * @param {object} container - HTML-элемент - общий контейнер слайдера, в пределах которого перемещается указатель
@@ -23,6 +18,11 @@ export class PinSlider {
     this.container = container;
     this.pin = pin;
     this.depth = depth;
+
+    this._coordShift = 0;
+    this._containerWidth = 0;
+    this._containerCoordLeft = 0;
+    this.EVENT_CHANGE_COORD = 'change-coord';
 
     this._onPinMousedown = this._onPinMousedown.bind(this);
     this._onPinKeydown = this._onPinKeydown.bind(this);

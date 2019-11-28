@@ -94,13 +94,13 @@ export class PicturePreview {
   }
 }
 
+// используются для порционного отображения комментариев при клика на кнопку загрузки большего колличества комментариев
+  const COMMENTS_SHOW_STEP = 5;
+
 /**
  * Отдельный класс для блока комментарие пользователей к выбранной картинке
  */
 class SocialCommentsBlock {
-
-  // используются для порционного отображения комментариев при клика на кнопку загрузки большего колличества комментариев
-  COMMENTS_SHOW_STEP = 5;
 
   /**
    * Создает объект блока с комментариями к выбранной картинке
@@ -151,7 +151,7 @@ class SocialCommentsBlock {
   _updateSocialComments() {
     // сохраняем стартовое значение и увеличиваем диапазон комментариев для отображения
     let startCommentItem = this._nextCommentItem;
-    this._nextCommentItem += this.COMMENTS_SHOW_STEP;
+    this._nextCommentItem += COMMENTS_SHOW_STEP;
 
     // если достигнут предел количества комментарие, отключаем обработку загрузки доп. комметариев
     if (this._nextCommentItem >= this.commentsData.length) {

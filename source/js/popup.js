@@ -7,10 +7,6 @@ import {eventMixin} from './utilities-op.js';
 
 export class Popup {
 
-  // название событий, которые генерируются объектом попапа
-  EVENT_SHOW_POPUP = 'show-popup';
-  EVENT_CLOSE_POPUP = 'close-popup';
-
   /**
    * Создает объект модального попапа
    * @param {object} overlay - HTML-элемент - ссылка на оверлей, которым закрывается документ при открытии попапа
@@ -38,6 +34,10 @@ export class Popup {
     this.hiddenPopupClass = options.hiddenPopupClass || 'hidden';
     this.documentBodyClass = options.documentBodyClass;
     this.positionSwap = options.swap;
+
+    // название событий, которые генерируются объектом попапа
+    this.EVENT_SHOW_POPUP = 'show-popup';
+    this.EVENT_CLOSE_POPUP = 'close-popup';
   }
 
   /**

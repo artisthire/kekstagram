@@ -11,8 +11,6 @@ import {eventMixin} from './utilities-op.js';
 */
 export class BtnsRangeSwitch {
 
-  EVENT_CHANGE_VALUE = 'change-value';
-
   /**
    * Создает объект переключателя с двумя кнопками и полем отображения изменяющейся величины
    * @param {object} htmlElements - содержит ссылки на HTML-элементы из которых состоит переключатель:
@@ -42,6 +40,8 @@ export class BtnsRangeSwitch {
 
     this._onBtnsClick = this._onBtnsClick.bind(this);
     this.container.addEventListener('click', this._onBtnsClick);
+
+    this.EVENT_CHANGE_VALUE = 'change-value';
   }
 
   /**

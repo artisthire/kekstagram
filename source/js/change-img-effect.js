@@ -7,29 +7,24 @@
 import {PinSlider} from './pin-slider.js';
 import {BtnsRangeSwitch} from './btns-range-switch.js';
 
+// классы эффекта по умолчанию и шаблон для применения типа эффекта в зависимости от выбранной радиокнопки
+const DEFAULT_EFFECT = 'none';
+const EFFECT_PATTERN = 'effects__preview--';
+
+// содержит массив для связи между названием эффекта в выбранной радиокнопке
+// и свойствами для filter в CSS для наложения эффекта на изображение
+const effectNameToCss = {
+  chrome: {filterName: 'grayscale', minValue: 0, maxValue: 1, filterUnit: ''},
+  sepia: {filterName: 'sepia', minValue: 0, maxValue: 1, filterUnit: ''},
+  marvin: {filterName: 'invert', minValue: 0, maxValue: 100, filterUnit: '%'},
+  phobos: {filterName: 'blur', minValue: 0, maxValue: 5, filterUnit: 'px'},
+  heat: {filterName: 'brightness', minValue: 1, maxValue: 3, filterUnit: ''}
+};
+
 /**
  * Class представляет собой объект для изменения эффекта и масштаба наложенного на изображение переданное изображение
  */
 export class ChangeImgEffect {
-
-  // классы эффекта по умолчанию и шаблон для применения типа эффекта в зависимости от выбранной радиокнопки
-  _DEFAULT_EFFECT = 'none';
-  _EFFECT_PATTERN = 'effects__preview--';
-
-  // содержит массив для связи между названием эффекта в выбранной радиокнопке
-  // и свойствами для filter в CSS для наложения эффекта на изображение
-  _effectNameToCss = {
-    chrome: {filterName: 'grayscale', minValue: 0, maxValue: 1, filterUnit: ''},
-    sepia: {filterName: 'sepia', minValue: 0, maxValue: 1, filterUnit: ''},
-    marvin: {filterName: 'invert', minValue: 0, maxValue: 100, filterUnit: '%'},
-    phobos: {filterName: 'blur', minValue: 0, maxValue: 5, filterUnit: 'px'},
-    heat: {filterName: 'brightness', minValue: 1, maxValue: 3, filterUnit: ''}
-  };
-
-  _pinSlider;
-  _scaler;
-  // хранит ссылку на тип выбранного эффекта для изменения его уровня с помощью слайдера
-  _selectedEffectBtn;
 
   /**
    * Создает объект для обработки изменения масштаба и эффектов наложенных на изображение
@@ -110,13 +105,13 @@ export class ChangeImgEffect {
 
     // если выбрана кнопка, когда эффекта нет
     // убираем слайдер выбора уровня наложенного эффекта
-    if (this._selectedEffectBtn.value === this._DEFAULT_EFFECT) {
+    if (this._selectedEffectBtn.value === DEFAULT_EFFECT) {
       this.levelEffectContainer.style.display = 'none';
     } else {
       // показываем слайдер управления уровнем эффекта
       this.levelEffectContainer.style.display = '';
       // добавялем класс к карнитке согласно выбранного эффекта
-      this.imgElement.classList.add(this._EFFECT_PATTERN + this._selectedEffectBtn.value);
+      this.imgElement.classList.add(EFFECT_PATTERN + this._selectedEffectBtn.value);
 
       // создаем слайдер для управления уровнем эффекта
       if (!this._pinSlider) {
@@ -141,10 +136,10 @@ export class ChangeImgEffect {
 
     // в зависимости от текущего выбранного эффекта
     // получаем параметры для установки стилей через filter в CSS
-    let effectFilterName = this._effectNameToCss[this._selectedEffectBtn.value].filterName;
-    let effectMinValue = this._effectNameToCss[this._selectedEffectBtn.value].minValue;
-    let effectMaxValue = this._effectNameToCss[this._selectedEffectBtn.value].maxValue;
-    let effectFilterUnit = this._effectNameToCss[this._selectedEffectBtn.value].filterUnit;
+    let effectFilterName = effectNameToCss[this._selectedEffectBtn.value].filterName;
+    let effectMinValue = effectNameToCss[this._selectedEffectBtn.value].minValue;
+    let effectMaxValue = effectNameToCss[this._selectedEffectBtn.value].maxValue;
+    let effectFilterUnit = effectNameToCss[this._selectedEffectBtn.value].filterUnit;
 
     // вычисляем уровень эффекта по положению указателя слайдера и границ изменения выбранного эффекта
     let effectLevel = effectMinValue + (pinCoordX / containerWidth * (effectMaxValue - effectMinValue));

@@ -47,9 +47,6 @@ function sendDataPicture(dataPicture, onSuccess, onError) {
  */
 class ServerRequest {
 
-  // таймаут в течении которого ждем ответ от сервера
-  _TIMEOUT = 10000;
-
   /**
    * Создает объект запроса
    * @param {string} url - URL-адрес, на который посылается запрос
@@ -62,6 +59,8 @@ class ServerRequest {
     this.requestMethod = method;
     this.onSuccess = onSuccess;
     this.onError = onError;
+    // таймаут в течении которого ждем ответ от сервера
+    this._TIMEOUT = 10000;
   }
 
   /**
