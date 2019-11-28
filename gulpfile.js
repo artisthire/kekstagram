@@ -7,9 +7,13 @@ var notify = require('gulp-notify');
 var gulpIf = require('gulp-if');
 var changed = require('gulp-changed');
 var debug = require('gulp-debug');
-// var sourcemaps = require('gulp-sourcemaps');
+var sourcemaps = require('gulp-sourcemaps');
 var browserSync = require('browser-sync').create();
+var rollup = require('gulp-better-rollup');
+var {terser} = require('rollup-plugin-terser');
+var rename = require("gulp-rename");
 
+console.log(rollup);
 // var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 
@@ -22,7 +26,7 @@ var patch = {
     favicon: 'source/favicon.ico',
     img: 'source/img/*',
     photos: 'source/photos/*',
-    js: 'source/js/*.js'
+    js: 'source/js/main.js'
   },
   dest: {
     root: 'build/',
@@ -86,13 +90,16 @@ gulp.task('js', function () {
         this.emit('end');
       }
     }))
-    // .pipe(gulpIf(isDev, sourcemaps.init()))
+    .pipe(gulpIf(isDev, sourcemaps.init()))
     // .pipe(concat('script.min.js'))
-    .pipe(gulpIf(!isDev, uglify()))
-    // .pipe(gulpIf(isDev, sourcemaps.write('/')))
+    //.pipe(gulpIf(!isDev, uglify()))
+    .pipe(rollup({plugins: [terser()]}, 'iife'))
+    .pipe(rename({suffix: '.min'}))
+    .pipe(gulpIf(isDev, sourcemaps.write('/')))
     .pipe(gulp.dest(patch.dest.js))
     .pipe(browserSync.reload({stream: true}));
 });
+
 
 gulp.task('clean', function (done) {
   console.log('---------- Очистка рабочей директории');

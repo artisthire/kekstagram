@@ -16,18 +16,21 @@
     "del": "^5.0.0",
     "eslint-config-htmlacademy": "^0.5.2",
     "gulp": "^4.0.2",
+    "gulp-better-rollup": "4.0.1",
     "gulp-changed": "^4.0.1",
-    "gulp-concat": "^2.6.1",
     "gulp-debug": "^4.0.0",
     "gulp-if": "^2.0.2",
     "gulp-notify": "^3.2.0",
     "gulp-plumber": "^1.2.1",
+    "gulp-rename": "1.4.0",
     "gulp-sourcemaps": "^2.6.5",
-    "gulp-uglify": "^3.0.2"
+    "rollup": "^1.27.5",
+    "rollup-plugin-terser": "5.1.2"
   },
   "dependencies": {},
   "scripts": {
     "start": "cross-env NODE_ENV=development gulp",
+    "build": "cross-env NODE_ENV=production gulp build",
     "test": "eslint js/"
   },
   "engines": {
