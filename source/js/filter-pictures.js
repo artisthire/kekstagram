@@ -3,8 +3,6 @@ import {getUniqueRandomArrayNumbers} from './utilities-op.js';
 
 // время в милисекундах для устранения "дребезга" переключения кнопок фильтра
 const BOUNCE_TIME = 500;
-// аттрибут, который добавляется к форме с кнопками для устранения повторного нажатия кнопок фильтра до истечения таймаута
-const BOUCE_ATTR = 'data-btn-bouce';
 
 /**
  * Модуль фильтрации картинок на главном экране
@@ -20,7 +18,10 @@ export class FilterPictures {
     this.form = this.container.querySelector('.img-filters__form');
     this.filterBtns = Array.from(this.form.querySelectorAll('.img-filters__button'));
 
-    this._removeBouceTimeout = this._removeBouceTimeout.bind(this);
+    // используется для задержки переключения кнопок фильтрации
+    this._bounceFlag = false;
+
+    this._removeBounceTimeout = this._removeBounceTimeout.bind(this);
     this._onBtnFilterClick = this._onBtnFilterClick.bind(this);
 
     // используется для сопоставления ID кнопки фильтра с функцией фильтрации изображений, которую нужно вызвать
@@ -56,18 +57,18 @@ export class FilterPictures {
 
     // если клик не по одной из кнопок фильтрации
     // либо по уже активной кнопке
-    // либо на форме установлен аттрибуте предотвращающий повторную фильтрацию в течении заданного таймаута
+    // либо установлен флаг предотвращающий повторную фильтрацию в течении заданного таймаута
     // ничего не делаем
     if (!this.filterBtns.includes(targetBtn) ||
         targetBtn.classList.contains('img-filters__button--active') ||
-        this.form.hasAttribute(BOUCE_ATTR)) {
+        this._bounceFlag) {
       return;
     }
 
-    // устанавливаем аттрибут, который предотвратит повторное нажатие кнопок до истечения заданной задержки
-    this.form.setAttribute(BOUCE_ATTR, '');
-    // запускаем таймер с функцией удаления аттрибута отмены нажатия через заданную задержку
-    this._bouceTimer = setTimeout(this._removeBouceTimeout, BOUNCE_TIME);
+    // устанавливаем флаг, который предотвратит повторное нажатие кнопок до истечения заданной задержки
+    this._bounceFlag = true;
+    // запускаем таймер повторного нажатия кнопок фильтрации
+    this._bounceTimer = setTimeout(this._removeBounceTimeout, BOUNCE_TIME);
 
     // находим предыдущую активную кнопку
     let prevActiveBtn = this.filterBtns.find((currentBtn) => currentBtn.classList.contains('img-filters__button--active'));
@@ -92,9 +93,9 @@ export class FilterPictures {
   /**
    * Удаляет аттрибут в форме с кнопками фильтарции, который останавливает повторное нажатие на кнопки
    */
-  _removeBouceTimeout() {
-    clearTimeout(this._bouceTimer);
-    this.form.removeAttribute(BOUCE_ATTR);
+  _removeBounceTimeout() {
+    clearTimeout(this._bounceTimer);
+    this._bounceFlag = false;
   }
 
   /**
